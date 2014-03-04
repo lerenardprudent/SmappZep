@@ -1,4 +1,4 @@
-package
+﻿package
 {
 	//import adobe.utils.CustomActions;
 	import flash.display.*;
@@ -125,6 +125,16 @@ package
 
 		public function smapp():void
 		{
+			super();
+			if (stage) {
+				this.start();
+			}
+		}
+		
+		public function start(ev:Event = null):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, start);
+			
 			_cntxMenu.hideBuiltInItems();
 			contextMenu = _cntxMenu;
 			
