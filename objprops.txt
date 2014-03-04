@@ -1,0 +1,64 @@
+ID 
+Type 
+Style 
+Page 
+DB field 
+Variable ID 
+Enabled 
+Hidden 
+VoS 
+Start time 
+End time 
+Persistent 
+Locked 
+Allow dropping of... 
+Width 
+Height 
+X 
+Y 
+Label text / text file 
+Object back 
+Object back OVER 
+Object back DOWN 
+Object border 
+Object border OVER 
+Object border DOWN 
+Input text 
+Label back 
+Label back OVER 
+Label back DOWN 
+Label border 
+Label border OVER 
+Label border DOWN 
+Label text 
+Label text OVER 
+Label text DOWN 
+Chars. 
+Restrict input 
+Multiline input 
+Label / content HTML formatted 
+Text selectable 
+CSS - style sheet file 
+Image file 
+Image file OVER 
+Image file DOWN 
+Hot points 
+Scale %  
+Opacity %  
+Shadow 
+Blend mode 
+Toggle button 
+Use text file source 
+Table rows 
+Table cols 
+Row height 
+Table header 
+Table left header 
+Table columns width 
+Table columns editable 
+Table columns format 
+Table columns alignment 
+Table columns max. characters 
+Table columns restrict input 
+Table data 
+Initial value(s)

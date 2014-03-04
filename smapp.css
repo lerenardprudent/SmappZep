@@ -1,0 +1,7 @@
+p { font-family:Arial, Helvetica, _sans; font-size: 11; color:#636374}
+h1 { font-family:Arial, Helvetica, _sans; font-size:11; font-weight:bold; color:#3975B7;}
+h2 { font-family:Arial, Helvetica, _sans; font-size:11; font-weight:bold; color:#3975B7; text-decoration:underline}
+a:link {color:#ff0000;}
+a:hover {color:#ff9900;}
+a:active {color:#ff0000;}
+.bluetext { color:#3975B7; } 

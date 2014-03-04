@@ -1,0 +1,44 @@
+﻿General:
+-Pour faire la mise à jour des dossiers de l’Étape de recrutement complétée à l’Assignation à l’interviewer il faut ouvrir 5 fenêtres, et entrer la même information dans plus qu’une dans certains cas. La mise à jour complète d’un dossier nécessitera au total l’ouverture de 10 fenêtres.
+- Le problème réside dans le passage obligatoire par une activité chaque fois que l’on veut débuter/compléter une étape ou modifier le dossier du participant. 
+- Comme Ted l’a constaté, la nature de notre projet de recherche ne nécessite pas, ou peu d’activités car il a automatisé le processus dans la plupart des cas de figure.
+- La raison principal pour laquelle nous utilisons peu d’activité réside dans le fait que le recrutement, l’assignation d’une date d’entrevue et l’assignation à un interviewer se font simultanément. De la sorte nous devons faire au moins 3 étapes inutilement.
+- Il faudra donc retrancher ces étapes et ces activités superflues qui, en plus de consommer du temps inutilement, augmentent les possibilités d’erreurs
+
+Calendar:
+- Changer le type de calendrier : le scroll est une perte de temps incroyable + calendrier  ne revient pas à la date du jour dans les nouveaux calendriers
+- Augmenter la taille du calendrier : les chiffres trop petits = augmentation des erreurs
+
+Users:
+- Adresse courriel : on ne peut pas utiliser le tiret ni la majuscule alors que certaines adresses en ont.
+- Manque un espace pour écrire téléphone au travail. Donner accès aux admin les champs travail.
+- Localisation de l’interview – Résidence ou Centre de recherche -utile uniquement dans la fiche de l’usager pour les interviewers= automatiser à partir de la fenêtre Usagers.
+
+Activities:
+- Quand on dit oui à la question : «Voulez - vous mettre à jour le dossier Participant / -Potentiel », parfois le dossier du participant n’apparaît pas.
+- Dans « Activités », après enregistrer quand on assigne à un interviewer, quand on dit oui à la question : «Voulez - vous mettre à jour le dossier Participant / Potentiel », parfois le dossier du participant n’apparaît pas. Dans la fenêtre « Usagers », le dossier n’a pas changé, mais dans la fenêtre « Activités » on voit le changement. Il faut refaire l’assignation pour changer le dossier dans « Usagers », ce qui donne deux activités dans « Activités ».
+
+Actions:
+- Planification_ Onglet  planning recrutement non - fonctionnel
+
+Data:
+- Participant 301053	Dossier inexistant, pourtant il a été recruté…
+- Date Interview : Les participants C-01  ayant complété l’entrevue T-03 avant la migration de Sygee affichent la Prochaine entrevue en 2011 ou 2012 (date de l’entrevue T-02)
+
+
+------------------------------------------------------------------------
+
+
+
+Nous avions discuté du cas type où une personne recruté ne fera jamais la 1ère entrevue et avons décidé d’ajouter le statut NINT pour l’Usager. 
+
+Je veux m’assurer de bien catégoriser : Le NINT retournera un Potentiel= est-ce que ce filtre est en lien avec le planning. Car NINT est un statut de planning = hyper important !
+
+Comme administrateur je dois avoir accès à changer le statut de l’Usager en tout temps comme le statut INT-ACT qui se changera en NINT. En ce moment, je n’ai pas accès.
+Lorsqu’on remplit les champs adresses de Add REC, il est inscrit dans le bas de la fenêtre une adresse initiale qui diffère de celle du dossier du participant. Est-ce que ça explique que parfois les champs sont déjà remplis au préalable et que parfois tous les champs sont vides… est-ce que cela a un impact sur une autre fiche compte, comme celle de la réelle adresse initiale qui apparaît  dans la fenêtre adresse?
+
+pour adresse, ajouter une case spécifique pour # appartement en rouge.
+
+Les informations relatives aux contacts n’ont pas été transférées du T2 au T3
+Certains dossiers affichent la case Permission d’être joint pour une autre recherche déjà coché= Erreur, ce formulaire n’est pas utilisé pour l’instant.
+Les fenêtres devraient être rouge pour les Activités et Vertes pour les Usagers.
