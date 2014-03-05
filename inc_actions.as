@@ -87,9 +87,9 @@ private function actkeydown(ob, k):void
 			case "OBJ_INP_520":		//lookup users filter
 			case "OBJ_INP_525":		//lookup users filter
 			case "OBJ_INP_540":		//lookup users filter
-				if (obn == "OBJ_INP_520") { v = trim(getobj(_wins[19], "INP", 520).xval); v1 = 1; }
-				else if (obn == "OBJ_INP_525") { v = trim(getobj(_wins[19], "INP", 525).xval); v1 = 2; }
-				else if (obn == "OBJ_INP_540") { v = trim(getobj(_wins[19], "INP", 540).xval); v1 = 3; }
+				if (obn == "OBJ_INP_520") { v = trim(getobj(_wins[19], "INP", 701).xval); v1 = 1; }
+				else if (obn == "OBJ_INP_525") { v = trim(getobj(_wins[19], "INP", 706).xval); v1 = 2; }
+				else if (obn == "OBJ_INP_540") { v = trim(getobj(_wins[19], "INP", 721).xval); v1 = 3; }
 				if ( isempty(v) ) { return; }
 				_dblookuptg = [_wins[19], "ACVRES" + v1];
 				pozwin(_wins[22], true, true, 0, 0, 1, 0)
@@ -251,59 +251,59 @@ private function obactstp(ob, obn, win):void
 	{
 		if (obn == "STP_543") 
 		{
-			if (isempty(getobj(win, "STP", 543).xval))
+			if (isempty(getobj(win, "STP", 724).xval))
 			{
-				getobj(win, "STP", 544).xval = "";
-				getobj(win, "STP", 545).xval = "";
+				getobj(win, "STP", 725).xval = "";
+				getobj(win, "STP", 726).xval = "";
 			}
 			else
 			{
-				if (getobj(win, "STP", 543).xval == "EVT")
+				if (getobj(win, "STP", 724).xval == "EVT")
 				{
-					getobj(win, "STP", 544).xval = "FIN";
-					getobj(win, "CAL", 550).xval = defdate();
+					getobj(win, "STP", 725).xval = "FIN";
+					getobj(win, "CAL", 731).xval = defdate();
 				}
 				else
 				{
-					getobj(win, "STP", 544).xval = "PLA";
+					getobj(win, "STP", 725).xval = "PLA";
 				}
-				getobj(win, "STP", 545).xval = "GEN";
-				getobj(win, "CAL", 549).xval = defdate();
+				getobj(win, "STP", 726).xval = "GEN";
+				getobj(win, "CAL", 730).xval = defdate();
 			}
 		}
 		else if (obn == "STP_551") 
 		{
-			if (isempty(getobj(win, "STP", 551).xval))
+			if (isempty(getobj(win, "STP", 732).xval))
 			{
-					getobj(win, "STP", 553).xval = "";
-					getobj(win, "STP", 554).xval = "";
+					getobj(win, "STP", 734).xval = "";
+					getobj(win, "STP", 735).xval = "";
 			}
 			else
 			{
-				if (getobj(win, "STP", 551).xval == "ASSIGNÉ RECRUTEUR")
+				if (getobj(win, "STP", 732).xval == "ASSIGNÉ RECRUTEUR")
 				{
-					getobj(win, "STP", 553).xval = "REC";
-					getobj(win, "STP", 554).xval = "ACT";
+					getobj(win, "STP", 734).xval = "REC";
+					getobj(win, "STP", 735).xval = "ACT";
 				}
-				else if (getobj(win, "STP", 551).xval == "RECRUTEMENT")
+				else if (getobj(win, "STP", 732).xval == "RECRUTEMENT")
 				{
-					getobj(win, "STP", 553).xval = "REC";
-					getobj(win, "STP", 554).xval = "";
+					getobj(win, "STP", 734).xval = "REC";
+					getobj(win, "STP", 735).xval = "";
 				}
-				else if (getobj(win, "STP", 551).xval == "ASSIGNÉ INTERVIEWER")
+				else if (getobj(win, "STP", 732).xval == "ASSIGNÉ INTERVIEWER")
 				{
-					getobj(win, "STP", 553).xval = "INT";
-					getobj(win, "STP", 554).xval = "ACT";
+					getobj(win, "STP", 734).xval = "INT";
+					getobj(win, "STP", 735).xval = "ACT";
 				}
-				else if (getobj(win, "STP", 551).xval == "INTERVIEW (QUESTIONNAIRE)")
+				else if (getobj(win, "STP", 732).xval == "INTERVIEW (QUESTIONNAIRE)")
 				{
-					getobj(win, "STP", 553).xval = "INT";
-					getobj(win, "STP", 554).xval = "";
+					getobj(win, "STP", 734).xval = "INT";
+					getobj(win, "STP", 735).xval = "";
 				}
 				else
 				{
-					getobj(win, "STP", 553).xval = "";
-					getobj(win, "STP", 554).xval = "";
+					getobj(win, "STP", 734).xval = "";
+					getobj(win, "STP", 735).xval = "";
 				}
 			}
 		}
@@ -708,7 +708,7 @@ private function obactbtn(ob, obn, win):void
 		case "BTN_86":			//users actions
 			resetform(_wins[19]);
 			scrollto(_wins[19], 0);
-			getobj(_wins[19], "LST", 507).xval = "1,Liste standard\r2,Liste recrutement\r3,Liste interviews\r4,Adresses visitées\r5,Étiquettes\r6,Statuts des dossiers";
+			getobj(_wins[19], "LST", 688).xval = "1,Liste standard\r2,Liste recrutement\r3,Liste interviews\r4,Adresses visitées\r5,Étiquettes\r6,Statuts des dossiers";
 			tofront(_wins[19]);
 			pozwin(_wins[19], true, true, 0, 0, 1, 0)
 			showwin(_wins[19], true, 1, 0);
@@ -1209,13 +1209,13 @@ private function obactbtn(ob, obn, win):void
 			_dbpage[1] = 0;
 			dbloadlist("ACT", _dbpage[1], _dbpagelen[1], _dbflt[1], _dbsort[1], _dbsortdir[1]);
 			break;
-		case "BTN_522":			//lookup users - user action win.
-		case "BTN_527":			//lookup users - user action win.
-		case "BTN_542":			//lookup users - user action win.
-			if (obn == "BTN_522") { v = trim(getobj(win, "INP", 520).xval); v1 = 1; }
-			else if (obn == "BTN_527"){v = trim(getobj(win, "INP", 525).xval); v1 = 2;}
-			else if (obn == "BTN_542"){v = trim(getobj(win, "INP", 540).xval); v1 = 3;}
-			//if ( isempty(v) ) { getobj(win, "INP", 539).xval = getobj(win, "INP", 541).xval = "";  return; }
+		case "BTN_703":			//lookup users - user action win.
+		case "BTN_708":			//lookup users - user action win.
+		case "BTN_723":			//lookup users - user action win.
+			if (obn == "BTN_703") { v = trim(getobj(win, "INP", 701).xval); v1 = 1; }
+			else if (obn == "BTN_708"){v = trim(getobj(win, "INP", 706).xval); v1 = 2;}
+			else if (obn == "BTN_723"){v = trim(getobj(win, "INP", 721).xval); v1 = 3;}
+			//if ( isempty(v) ) { getobj(win, "INP", 720).xval = getobj(win, "INP", 722).xval = "";  return; }
 			if ( isempty(v) ) { return; }
 			_dblookuptg = [win, "ACVRES" + v1];
 			pozwin(_wins[22], true, true, 0, 0, 1, 0)
@@ -1224,21 +1224,21 @@ private function obactbtn(ob, obn, win):void
 			dbloadlookup("USRLKP", v);
 			break;	
 			
-		case "BTN_528":			//user actions - interviewer reassignment
-			pv = "fn175¦" + trim(getobj(win, "INP", 519).xval) + "¦" + trim(getobj(win, "INP", 524).xval);
+		case "BTN_709":			//user actions - interviewer reassignment
+			pv = "fn175¦" + trim(getobj(win, "INP", 700).xval) + "¦" + trim(getobj(win, "INP", 705).xval);
 			actdbpost(_apppath + "dbactions.php", pv);
 			break;
-		case "BTN_509":			//user actions - batch activities export
+		case "BTN_690":			//user actions - batch activities export
 			pozwin(_wins[25], true, true, 0, 0, 1, 0);
 			showwin(_wins[25], true, 1, 0);
 			showblocker(true);
 			_acttarget = "USRXP";
 			break;
-		case "BTN_534":			//user actions - batch activities planning
+		case "BTN_715":			//user actions - batch activities planning
 			_acttarget = "USRACTPLAN";
 			actionapplyto();
 			break;
-		case "BTN_557":			//user actions - batch activities execute
+		case "BTN_738":			//user actions - batch activities execute
 			if (validateform(win, 6))
 			{
 				pozwin(_wins[25], true, true, 0, 0, 1, 0);
@@ -1415,10 +1415,10 @@ private function onwinlayout(win):void
 	}
 	else if (win == _wins[19])			//user actions
 	{
-		getobj(win, "WIS", 548).htext.x = -190;
-		getobj(win, "WIS", 555).htext.y = -60;
-		getobj(win, "WIS", 556).htext.x = -190;
-		getobj(win, "WIS", 556).htext.y = -220;
+		getobj(win, "WIS", 729).htext.x = -190;
+		getobj(win, "WIS", 736).htext.y = -60;
+		getobj(win, "WIS", 737).htext.x = -190;
+		getobj(win, "WIS", 737).htext.y = -220;
 	}
 	else if (win == _wins[26])			//user actions
 	{
@@ -1567,34 +1567,34 @@ private function actionapplyto():void
 	if (_acttarget == "USRXP")		//export users
 	{
 		v = null;
-		try { v = getobj(_wins[19], "LST", 507).selrow; } catch (er) { }
+		try { v = getobj(_wins[19], "LST", 688).selrow; } catch (er) { }
 		if (v == null) { lay = 1; } else { lay = v[0]; }
 		if (getobj(_wins[25], "RAD", 663).xval == 1)		//filtered list
 		{
-			if (getobj(_wins[19], "RAD", 503).xval == 1)		//csv
+			if (getobj(_wins[19], "RAD", 682).xval == 1)		//csv
 			{
 				_dbxfile[0] = "usrlist.txt";
 				dbloadlist("USRXCL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], lay);
 			}
-			else if (getobj(_wins[19], "RAD", 504).xval == 1)		//html
+			else if (getobj(_wins[19], "RAD", 683).xval == 1)		//html
 			{
 				_dbxfile[0] = "usrlist.htm";
-				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 505).xval, lay);
+				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay);
 			}
 		}
 		else if (getobj(_wins[25], "RAD", 664).xval == 1)		//selected items
 		{
 			if ( selrecsarray(_wins[9], "LST", 79) != "")
 			{
-				if (getobj(_wins[19], "RAD", 503).xval == 1)		//csv
+				if (getobj(_wins[19], "RAD", 682).xval == 1)		//csv
 				{
 					_dbxfile[0] = "usrlist.txt";
 					dbloadlist("USRXCS", _dbpage[0], _dbpagelen[0], selrecsarray(_wins[9], "LST", 79), _dbsort[0], _dbsortdir[0], _dbxfile[0], lay);
 				}
-				else if (getobj(_wins[19], "RAD", 504).xval == 1)		//html
+				else if (getobj(_wins[19], "RAD", 683).xval == 1)		//html
 				{
 					_dbxfile[0] = "usrlist.htm";
-					dbloadlist("USRXHS", _dbpage[0], _dbpagelen[0], selrecsarray(_wins[9], "LST", 79), _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 505).xval, lay);
+					dbloadlist("USRXHS", _dbpage[0], _dbpagelen[0], selrecsarray(_wins[9], "LST", 79), _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay);
 				}
 			}
 		}
@@ -1770,12 +1770,12 @@ private function validateform(win, subwin):Boolean
 			{
 				if (isempty(getobj(win, fl[i][0], fl[i][1]).xval)) { return false;}
 			}
-			v1 = getobj(win, "STP", 553).xval;			//etape
-			v2 = getobj(win, "INP", 539).xval;			//id resp
+			v1 = getobj(win, "STP", 734).xval;			//etape
+			v2 = getobj(win, "INP", 720).xval;			//id resp
 			if (v1 == "INT" && (v2.indexOf("INT") == -1 && v2.indexOf("ADM") == -1)) { return false; }
 			if (v1 == "REC" && (v2.indexOf("REC") == -1 && v2.indexOf("ADM") == -1)) { return false; }
-			v1 = getobj(win, "STP", 551).xval;			//description
-			v2 = getobj(win, "STP", 554).xval;			//status
+			v1 = getobj(win, "STP", 732).xval;			//description
+			v2 = getobj(win, "STP", 735).xval;			//status
 			if(v1 == "ASSIGNÉ RECRUTEUR" && v2 != "ACT") { return false;}
 			if (v1 == "ASSIGNÉ INTERVIEWER" && v2 != "ACT") { return false; }
 			fl = [["STP", 552], ["STP", 553], ["STP", 554]];
@@ -2845,23 +2845,23 @@ private function lookup2form(win):void
 		{
 			if (_dblookuptg[1] == "ACVRES1")
 			{
-				getobj(_wins[19], "INP", 521).xval = sr[0];
-				getobj(_wins[19], "INP", 519).xval = sr[1];
-				getobj(_wins[19], "INP", 520).xval = sr[2] + " " + sr[3];
+				getobj(_wins[19], "INP", 702).xval = sr[0];
+				getobj(_wins[19], "INP", 700).xval = sr[1];
+				getobj(_wins[19], "INP", 701).xval = sr[2] + " " + sr[3];
 			}
 			else if (_dblookuptg[1] == "ACVRES2")
 			{
-				getobj(_wins[19], "INP", 526).xval = sr[0];
-				getobj(_wins[19], "INP", 524).xval = sr[1];
-				getobj(_wins[19], "INP", 525).xval = sr[2] + " " + sr[3];
+				getobj(_wins[19], "INP", 707).xval = sr[0];
+				getobj(_wins[19], "INP", 705).xval = sr[1];
+				getobj(_wins[19], "INP", 706).xval = sr[2] + " " + sr[3];
 			}
 			else if (_dblookuptg[1] == "ACVRES3")
 			{
-				getobj(_wins[19], "INP", 541).xval = sr[0];
-				getobj(_wins[19], "INP", 539).xval = sr[1];
-				getobj(_wins[19], "INP", 540).xval = sr[2] + " " + sr[3];
-				getobj(_wins[19], "INP", 536).xval = sr[6];
-				getobj(_wins[19], "INP", 537).xval = sr[7];
+				getobj(_wins[19], "INP", 722).xval = sr[0];
+				getobj(_wins[19], "INP", 720).xval = sr[1];
+				getobj(_wins[19], "INP", 721).xval = sr[2] + " " + sr[3];
+				getobj(_wins[19], "INP", 717).xval = sr[6];
+				getobj(_wins[19], "INP", 718).xval = sr[7];
 			}
 		}
 		else if (_dblookuptg[0] == _wins[12])		//actions user

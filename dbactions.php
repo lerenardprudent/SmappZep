@@ -1364,6 +1364,7 @@
 			for ($j = 0; $j < count($sta); $j++)
 			{
 				$querySQLx = "select id from activity where idusr = '" . $itw[$i][0] . "' and (pstep = 'INT' or pstep = 'FIN') and pstatus = '" .$sta[$j]. "' and pphase = 'T-03'";
+				file_put_contents("debug_out", $querySQLx);
 				//$querySQLx = "select id from users where (step = 'INT' or step = 'FIN') and phase = 'T-03' and status = '" .$sta[$j]. "' and cust8 like '" . $itw[$i][0] . "%'";
 				$resultx = @mysql_query($querySQLx) or die ("-er-sql-" . mysql_error());
 				$trows = mysql_num_rows($resultx);
