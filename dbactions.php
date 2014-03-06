@@ -372,7 +372,7 @@
 			}
 		}
 		
-		$querySQL = "fname='" .$par[2]. "', lname='" .$par[3]. "', idusr='" .$par[4]. "', idusraux='" .$par[5]. "', alias='" .$par[6]. "', pword='" .$par[7]. "', type='" .$par[8]. "', status='" .$par[9]. "', lang='" .$par[10]. "', birth='" .$par[11]. "', sex='" .$par[12]. "', matrim='" .$par[13]. "', educ='" .$par[14]. "', prof='" .$par[15]. "', profcode='" .$par[16]. "', rev='" .$par[17]. "', revcode='" .$par[18]. "', hphone='" .$par[19]. "', hfax='" .$par[20]. "', cphone='" .$par[21]. "', haval1f='" .$par[22]. "', haval1t='" .$par[23]. "', haval2f='" .$par[24]. "', haval2t='" .$par[25]. "', haval3f='" .$par[26]. "', haval3t='" .$par[27]. "', hemail='" .$par[28]. "', haddress='" .$par[29]. "', haddressx='" .$par[30]. "', hcity='" .$par[31]. "', hstate='" .$par[32]. "', hcountry='" .$par[33]. "', hpostal='" .$par[34]. "', hdate='" .$par[35]. "', hlat='" .$par[36]. "', hlng='" .$par[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', workplace='" .$par[41]. "', wposition='" .$par[42]. "', wdate='" .$par[43]. "', wphone='" .$par[44]. "', wfax='" .$par[45]. "', waval1f='" .$par[46]. "', waval1t='" .$par[47]. "', wemail='" .$par[48]. "', waddress='" .$par[49]. "', waddressx='" .$par[50]. "', wcity='" .$par[51]. "', wstate='" .$par[52]. "', wcountry='" .$par[53]. "', wpostal='" .$par[54]. "', wlat='" .$par[55]. "', wlng='" .$par[56]. "', wzone1='" .$z4. "', wzone2='" .$z5. "', wzone3='" .$z6. "', social='" .$par[60]. "', xcontact1='" .$par[61]. "', xcontact2='" .$par[62]. "', xcontact3='" .$par[63]. "', cust1='" .$par[64]. "', cust2='" .$par[65]. "', cust3='" .$par[66]. "', cust4='" .$par[67]. "', cust5='" .$par[68]. "', cust6='" .$par[69]. "', cust7='" .$par[70]. "', cust8='" .$par[71]. "', cust9='" .$par[72]. "', checklist='" .$par[73]. "', phase='" .$par[74]. "', step='" .$par[75]. "', xgroup='" .$par[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .$par[78]. "'";
+		$querySQL = "fname='" .$par[2]. "', lname='" .$par[3]. "', idusr='" .$par[4]. "', idusraux='" .$par[5]. "', alias='" .$par[6]. "', pword='" .$par[7]. "', type='" .$par[8]. "', status='" .$par[9]. "', lang='" .$par[10]. "', birth='" .$par[11]. "', sex='" .$par[12]. "', matrim='" .$par[13]. "', educ='" .$par[14]. "', prof='" .$par[15]. "', profcode='" .$par[16]. "', rev='" .$par[17]. "', revcode='" .$par[18]. "', hphone='" .$par[19]. "', hfax='" .$par[20]. "', cphone='" .$par[21]. "', haval1f='" .$par[22]. "', haval1t='" .$par[23]. "', haval2f='" .$par[24]. "', haval2t='" .$par[25]. "', haval3f='" .$par[26]. "', haval3t='" .$par[27]. "', hemail='" .$par[28]. "', haddress='" .$par[29]. "', haddressx='" .$par[30]. "', hcity='" .$par[31]. "', hstate='" .$par[32]. "', hcountry='" .$par[33]. "', hpostal='" .$par[34]. "', hdate='" .$par[35]. "', hlat='" .$par[36]. "', hlng='" .$par[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', workplace='" .$par[41]. "', wposition='" .$par[42]. "', wdate='" .$par[43]. "', wphone='" .$par[44]. "', wfax='" .$par[45]. "', waval1f='" .$par[46]. "', waval1t='" .$par[47]. "', wemail='" .$par[48]. "', waddress='" .$par[49]. "', waddressx='" .$par[50]. "', wcity='" .$par[51]. "', wstate='" .$par[52]. "', wcountry='" .$par[53]. "', wpostal='" .$par[54]. "', wlat='" .$par[55]. "', wlng='" .$par[56]. "', wzone1='" .$z4. "', wzone2='" .$z5. "', wzone3='" .$z6. "', social='" .$par[60]. "', xcontact1='" .$par[61]. "', xcontact2='" .$par[62]. "', xcontact3='" .$par[63]. "', cust1='" .$par[64]. "', cust2='" .$par[65]. "', cust3='" .$par[66]. "', cust4='" .$par[67]. "', cust5='" .$par[68]. "', cust6='" .$par[69]. "', cust7='" .$par[70]. "', cust8='" .$par[71]. "', cust9='" .$par[72]. "', checklist='" .$par[73]. "', phase='" .$par[74]. "', step='" .$par[75]. "', xgroup='" .$par[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .mysql_real_escape_string($par[78]). "'";
 		if ($id == "")			//insert
 		{
 			$querySQL = "insert into " .$userstbl. " set id='NULL', " . $querySQL;
@@ -1037,7 +1037,7 @@
 				$result = @mysql_query($querySQL) or die ("-er-sql-" . mysql_error());
 				if($result)
 				{
-					htmusr7($result, $par[6], $par[7]);
+					htmusr7($result, $par[6], $par[7], $par[9], $par[10] );
 					$retv = "-ok-fn160-";
 				}
 				else
@@ -1330,7 +1330,7 @@
 		fclose($fh);
 	}	
 	
-	function htmusr7($res, $fi, $ti)
+	function htmusr7($res, $fi, $ti, $temp, $coh )
 	{
 		$sta = array("COM","ACT","ARE","NIW","ABA","DEC","DHZ","DAI","ANN");
 		$itw = array();
@@ -1351,7 +1351,7 @@
 			</style>
 			</head><body>
 			<table>
-			<tr><td colspan='11' style='background-image:url(media/douglaslogo.png); background-repeat:no-repeat; background-position:right; background-color:#dd0000; color:#ffffff; font-size:20px; text-align:left; padding:5mm 3mm 5mm 10mm'><b>Suivi des statuts de dossier : T-03</b><br/><span style='font-size:11px;'><b>DATE : " .date('Y-m-d'). "</b></span></td></tr>
+			<tr><td colspan='11' style='background-image:url(media/douglaslogo.png); background-repeat:no-repeat; background-position:right; background-color:#dd0000; color:#ffffff; font-size:20px; text-align:left; padding:5mm 3mm 5mm 10mm'><b>Suivi des statuts de dossier : ".$temp." / ".$coh."</b><br/><span style='font-size:11px;'><b>DATE : " .date('Y-m-d'). "</b></span></td></tr>
 			<tr><td style='text-align:left;'><b>Interviewer</b></td><td><b>COM</b></td><td><b>ACT</b></td><td><b>ARE</b></td><td><b>NIW</b></td><td><b>ABA</b></td><td><b>DEC</b></td><td><b>DHZ</b></td><td><b>DAI</b></td><td><b>ANN</b></td><td style='color:#dd0000'><b>Total</b></td></tr>";
 		fwrite($fh, $strdata);
 		
@@ -1363,8 +1363,8 @@
 			$totu = 0;
 			for ($j = 0; $j < count($sta); $j++)
 			{
-				$querySQLx = "select id from activity where idusr = '" . $itw[$i][0] . "' and (pstep = 'INT' or pstep = 'FIN') and pstatus = '" .$sta[$j]. "' and pphase = 'T-03'";
-				file_put_contents("debug_out", $querySQLx);
+				$querySQLx = "select id from activity where idusr = '" . $itw[$i][0] . "' and pxgroup = '". $coh . "' and (pstep = 'INT' or pstep = 'FIN') and pstatus = '" .$sta[$j]. "' and pphase = '".$temp."'";
+				file_put_contents('debug_out', $querySQLx);
 				//$querySQLx = "select id from users where (step = 'INT' or step = 'FIN') and phase = 'T-03' and status = '" .$sta[$j]. "' and cust8 like '" . $itw[$i][0] . "%'";
 				$resultx = @mysql_query($querySQLx) or die ("-er-sql-" . mysql_error());
 				$trows = mysql_num_rows($resultx);

@@ -1229,10 +1229,36 @@ private function obactbtn(ob, obn, win):void
 			actdbpost(_apppath + "dbactions.php", pv);
 			break;
 		case "BTN_690":			//user actions - batch activities export
-			pozwin(_wins[25], true, true, 0, 0, 1, 0);
-			showwin(_wins[25], true, 1, 0);
-			showblocker(true);
-			_acttarget = "USRXP";
+			var csv = getobj(_wins[19], "RAD", 682).xval;
+			var html = getobj(_wins[19], "RAD", 683).xval;
+			var temp = getobj(_wins[19], "STP", 684).xval;
+			var coho = getobj(_wins[19], "STP", 685).xval;
+			var invalidInputMsg = "";
+			if ( !csv && !html ) {
+				invalidInputMsg = "Veuillez sélectionner le type de sortie que vous souhaitez générer (CSV ou HTML).";
+			}
+			else if ( temp == '---' ) {
+				invalidInputMsg = "Veuillez entrer un temps.";
+			}
+			else if ( temp != 'T-03' && temp != 'T-04' ) {
+				invalidInputMsg = "Veuillez entrer un temps valide (T-03 ou T-04).";
+			}
+			else if ( coho == '---' ) {
+				invalidInputMsg = "Veuillez entrer une cohorte.";
+			}
+			else if ( coho != 'C-01' && coho != 'C-02' ) {
+				invalidInputMsg = "Veuillez entrer une cohorte valide (C-01 ou C-02).";
+			}
+			
+			if ( invalidInputMsg == "" ) {
+				pozwin(_wins[25], true, true, 0, 0, 1, 0);
+				showwin(_wins[25], true, 1, 0);
+				showblocker(true);
+				_acttarget = "USRXP";
+			}
+			else {
+				alert(_wins[0], invalidInputMsg, "");
+			}
 			break;
 		case "BTN_715":			//user actions - batch activities planning
 			_acttarget = "USRACTPLAN";
@@ -1579,7 +1605,7 @@ private function actionapplyto():void
 			else if (getobj(_wins[19], "RAD", 683).xval == 1)		//html
 			{
 				_dbxfile[0] = "usrlist.htm";
-				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay);
+				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay, getobj(_wins[19], "STP", 684).xval, getobj(_wins[19], "STP", 685).xval );
 			}
 		}
 		else if (getobj(_wins[25], "RAD", 664).xval == 1)		//selected items

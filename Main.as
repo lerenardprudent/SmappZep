@@ -9,7 +9,7 @@ package
 	 */
 	public class Main extends Sprite 
 	{
-		var sma:smapp = new smapp();
+		private var sma:smapp = new smapp();
 		
 		public function Main():void 
 		{
