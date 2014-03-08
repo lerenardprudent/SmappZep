@@ -332,6 +332,13 @@ private function obactstp(ob, obn, win):void
 			}
 		}
 	}
+	else if (win == _wins[27])
+	{
+		if (obn == "STP_672") {
+			var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
+			setChecklist(tempStp.xval);
+		}
+	}
 }
 
 private function getnewuserid():void
@@ -864,12 +871,25 @@ private function obactbtn(ob, obn, win):void
 			break;
 			
 		case "BTN_181":			//signed documents lookup
+			var tempUsager:fstp1 = getobj(_wins[10], "STP", 101);
+			var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
+			var tempCourantUsager = tempUsager.vidx;
+			tempStp.xval = 'T-0' + tempCourantUsager.toString();
+			tempStp.xmax = tempCourantUsager;
+			
 			_lookuptg = [getobj(win, "INP", 180)];
 			v = _lookuptg[0].xval;
-			if (v.indexOf("RECH") != -1) { getobj(_wins[27], "CHK", 667).xval = 1; } else { getobj(_wins[27], "CHK", 667).xval = 0; }
-			if (v.indexOf("RAMQ") != -1) { getobj(_wins[27], "CHK", 668).xval = 1; } else { getobj(_wins[27], "CHK", 668).xval = 0; }
-			if (v.indexOf("AREC") != -1) { getobj(_wins[27], "CHK", 669).xval = 1; } else { getobj(_wins[27], "CHK", 669).xval = 0; }
-			if (v.indexOf("SDIAG") != -1) { getobj(_wins[27], "CHK", 670).xval = 1; } else { getobj(_wins[27], "CHK", 670).xval = 0; }
+			var checklist:String = v;
+			if ( checklist.length > 0 && checklist.indexOf(":") == -1 ) { // Has checklist format been updated?
+				checklist = correctChecklist(checklist, tempUsager.xval);
+				(getobj(_wins[10], "INP", 180) as finp1).xval = checklist;
+			}
+			
+			var checklistHolder:finp1 = getobj(_wins[10], "INP", 180);
+			var checklistStr = checklistHolder.xval;
+			var tmpChecklistHolder:finp1 = getobj(_wins[27], "INP", 674);
+			tmpChecklistHolder.xval = checklistStr;
+			setChecklist(tempUsager.xval);
 			pozwin(_wins[27], true, true, 0, 0, 1, 0);
 			showwin(_wins[27], true, 1, 0);
 			showblocker(true);
@@ -1346,16 +1366,11 @@ private function obactbtn(ob, obn, win):void
 			showwin(win, false, 1, 0);
 			showblocker(false);
 			break;
-			
-		case "BTN_675":			//signed documents window button
-			a = ["RECH", "RAMQ", "AREC", "SDIAG", "AUT"];
-			v = [];
-			for (i = 667; i <= 671; ++i)
-			{
-				if (getobj(win, "CHK", i).xval == 1) { v[v.length] = a[i - 667]; }
-			}
-			v = v.join("  ");
-			_lookuptg[0].xval = v;
+		case "BTN_675":
+			saveChecklistToTemp();
+			break;
+		case "BTN_676":			//signed documents window button
+			_lookuptg[0].xval = (getobj(_wins[27], "INP", 674) as finp1).xval;
 		
 			showwin(_wins[27], false, 1, 0);
 			showblocker(false);
@@ -3053,3 +3068,56 @@ private function selrecsarray(win, ot, oi):String
 	return si;
 }
 
+private function setChecklist(temp:String):void
+{
+	var v:String = (getobj(_wins[27], "INP", 674) as finp1).xval;
+	var subChecklistStr:String = "";
+	var t:int = v.indexOf(temp);
+	if ( t >= 0 ) {
+		var cStart:int = v.indexOf('{', t) + 1;
+		var cEnd:int = v.indexOf('}', cStart);
+		subChecklistStr = v.substring(cStart, cEnd);
+	}
+	trace("Got", v, "Setting for time", temp, "based on", subChecklistStr);
+	if (subChecklistStr.indexOf("RECH") != -1) { getobj(_wins[27], "CHK", 667).xval = 1; } else { getobj(_wins[27], "CHK", 667).xval = 0; }
+	if (subChecklistStr.indexOf("RAMQ") != -1) { getobj(_wins[27], "CHK", 668).xval = 1; } else { getobj(_wins[27], "CHK", 668).xval = 0; }
+	if (subChecklistStr.indexOf("AREC") != -1) { getobj(_wins[27], "CHK", 669).xval = 1; } else { getobj(_wins[27], "CHK", 669).xval = 0; }
+	if (subChecklistStr.indexOf("SDIAG") != -1) { getobj(_wins[27], "CHK", 670).xval = 1; } else { getobj(_wins[27], "CHK", 670).xval = 0; }
+	if (subChecklistStr.indexOf("AUT") != -1) { getobj(_wins[27], "CHK", 671).xval = 1; } else { getobj(_wins[27], "CHK", 671).xval = 0; }
+}
+
+private function correctChecklist(v:String, tempCourant:String):String
+{
+	trace("Got: ", v);
+	if (v.length > 0 ) {
+		v = tempCourant + ":{" + v + "}";
+	}
+	trace("Checklist corrected to: ", v);
+	return v;
+}
+
+private function saveChecklistToTemp():void
+{
+	var timeStp:fstp1 = getobj(_wins[27], "STP", 672);
+	var timeChecklist:String = timeStp.xval;
+	var a = ["RECH", "RAMQ", "AREC", "SDIAG", "AUT"];
+	var v = [];
+	for (var i = 667; i <= 671; ++i)
+	{
+		if (getobj(_wins[27], "CHK", i).xval == 1) { v[v.length] = a[i - 667]; }
+	}
+	v = v.join("  ");
+	var tempChecklistHolder:finp1 = getobj(_wins[27], "INP", 674);
+	var tempCompleteChecklistStr:String = tempChecklistHolder.xval;
+	trace("Saving", v, "at time", timeChecklist, "Checklist before: ", tempCompleteChecklistStr);
+	var idx:int = tempCompleteChecklistStr.indexOf(timeChecklist);
+	if ( idx < 0 ) {
+		tempCompleteChecklistStr += " " + timeChecklist + ": {" + v + "}";
+	}
+	else {
+		var re:RegExp = new RegExp(timeChecklist + ":\{[0-9a-z ]+\}", "i");
+		tempCompleteChecklistStr = tempCompleteChecklistStr.replace(re, timeChecklist + ":{" + v + "}");
+	}
+	tempChecklistHolder.xval = tempCompleteChecklistStr;
+	trace("Temp complete checklist updated to: ", tempCompleteChecklistStr);
+}

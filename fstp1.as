@@ -30,6 +30,7 @@ package
 		private var _vstep:int = 1;
 		private var _vmin:int = 0;
 		private var _vmax:int = 23;
+		private var _lastClick = 'X';
 
 		public function fstp1(na, id, st, w, h, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, dv):void
 		{
@@ -102,12 +103,12 @@ package
 			
 		public function thisdown (... parms):void
 		{
-			if (parms[0].name == "arru" || parms[0].name == "arrd") { parms[0].alpha = .7;}
+			if (parms[0].name == "arru" || parms[0].name == "arrd") { parms[0].alpha = .7; }
 		}
 		
 		public function thisup (... parms):void
 		{
-			if (parms[0].name == "arru" || parms[0].name == "arrd") { parms[0].alpha = 1;}
+			if (parms[0].name == "arru" || parms[0].name == "arrd") { parms[0].alpha = 1; }
 		}
 		
 		public function thisclick (... parms):void
@@ -145,7 +146,7 @@ package
 					if (_vlist != null)
 					{
 						v = _vndx + _vstep;
-						if (v < _vlist.length) { _vndx = v; xval = _vlist[_vndx]; }
+						if (v < _vlist.length && v < _vmax) { _vndx = v; xval = _vlist[_vndx]; }
 					}
 				}
 			}
@@ -350,5 +351,14 @@ package
 			return _dbfld;
 		}
 		
+		public function set vidx(v:int):void
+		{
+			_vndx = v;
+		}
+		
+		public function get vidx():int
+		{
+			return _vndx;
+		}
 	}
 }

@@ -53,7 +53,7 @@
 		private var _actloader:*;
 				
 		private var _obover:* = null;
-		
+		private var _test_mode:Boolean = false;
 		/*
 		private const _dbpath = "";
 		private const _apppath = "";
@@ -126,6 +126,7 @@
 		public function smapp():void
 		{
 			super();
+			check_if_test_mode();
 			if (stage) {
 				this.start();
 			}
@@ -297,11 +298,43 @@
 			actionresize(stage.stageWidth, stage.stageHeight);
 			_preloader.visible = false;
 			_preloader.gotoAndStop(1);
-			
-			pozwin(_wins[6], true, true, 0, 0, false, 0);		//login first time
-			showwin(_wins[6], true, 0, 0);
-			showblocker(true);
-		}
 
+			// ADDED BY DMARG FOR TESTING PURPOSES ONLY !!!
+			if (_test_mode) {
+				actiondb("-ok-fn100-4747¦Yan¦Kestens¦ADM¦SUP001¦0¦0");
+				tofront(_wins[9]);
+				showwin(_wins[9], true, 1, 0);
+				setwinperms(_wins[9]);
+			}
+			else {
+				pozwin(_wins[6], true, true, 0, 0, false, 0);		//login first time
+				showwin(_wins[6], true, 0, 0);
+				showblocker(true);
+			}
+		}
+		
+		private function check_if_test_mode():void
+		{
+			var flagFilename:String = "mode_test";
+			var urlRequest:URLRequest = new URLRequest(flagFilename);
+			var urlLoader:URLLoader = new URLLoader();
+			urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
+			urlLoader.addEventListener(Event.COMPLETE, urlLoader_complete);
+			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoader_error);
+			urlLoader.load(urlRequest);
+		}
+		
+		private function urlLoader_complete(evt:Event):void
+		{
+			trace("== Test mode ==");
+			_test_mode = true;
+		}
+		
+		private function urlLoader_error(evt:Event):void
+		{
+			
+		}
+		
+		
 	}
 }
