@@ -1229,6 +1229,9 @@ private function obactbtn(ob, obn, win):void
 			_dbpage[1] = 0;
 			dbloadlist("ACT", _dbpage[1], _dbpagelen[1], _dbflt[1], _dbsort[1], _dbsortdir[1]);
 			break;
+		case "BTN_712":
+			getURL('carte.htm');
+			break;
 		case "BTN_703":			//lookup users - user action win.
 		case "BTN_708":			//lookup users - user action win.
 		case "BTN_723":			//lookup users - user action win.
@@ -1249,25 +1252,27 @@ private function obactbtn(ob, obn, win):void
 			actdbpost(_apppath + "dbactions.php", pv);
 			break;
 		case "BTN_690":			//user actions - batch activities export
-			var csv = getobj(_wins[19], "RAD", 682).xval;
-			var html = getobj(_wins[19], "RAD", 683).xval;
-			var temp = getobj(_wins[19], "STP", 684).xval;
-			var coho = getobj(_wins[19], "STP", 685).xval;
+			var csv:Boolean = getobj(_wins[19], "RAD", 682).xval;
+			var html:Boolean = getobj(_wins[19], "RAD", 683).xval;
+			var tempStp:fstp1 = getobj(_wins[19], "STP", 684);
+			var temp:String = tempStp.xval;
+			var coho:String = getobj(_wins[19], "STP", 685).xval;
 			var invalidInputMsg = "";
+			
 			if ( !csv && !html ) {
 				invalidInputMsg = "Veuillez sélectionner le type de sortie que vous souhaitez générer (CSV ou HTML).";
 			}
 			else if ( temp == '---' ) {
 				invalidInputMsg = "Veuillez entrer un temps.";
 			}
-			else if ( temp != 'T-03' && temp != 'T-04' ) {
-				invalidInputMsg = "Veuillez entrer un temps valide (T-03 ou T-04).";
+			else if ( temp.match(/T-[0-9][0-9]/) == null ) {
+				invalidInputMsg = "Veuillez entrer un temps valide.";
 			}
 			else if ( coho == '---' ) {
 				invalidInputMsg = "Veuillez entrer une cohorte.";
 			}
-			else if ( coho != 'C-01' && coho != 'C-02' ) {
-				invalidInputMsg = "Veuillez entrer une cohorte valide (C-01 ou C-02).";
+			else if ( coho.match(/C-[0-9][0-9]/) == null ) {
+				invalidInputMsg = "Veuillez entrer une cohorte valide.";
 			}
 			
 			if ( invalidInputMsg == "" ) {

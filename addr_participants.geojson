@@ -1,0 +1,49 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "node/224272888",
+      "properties": {
+        "name": "Kirkland municipal library"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -73.8576771, 45.4483419 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/244507346",
+      "properties": {
+        "name": "Bibliothèque de Dorval"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -73.7562103, 45.4396573 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/267188442",
+      "properties": {
+        "name": "Bibliothèque Léo-Lecavalier"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -73.4982666,45.4153141 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/288641826",
+      "properties": {
+        "name": "Bibliotheque municipale Georges-d'Or"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-73.4631942, 45.5211785 ]
+      }
+    }
+  ]
+}
