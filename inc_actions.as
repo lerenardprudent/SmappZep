@@ -2574,6 +2574,14 @@ private function actiondb(d:String):void
 			v = d.substr(j + 1);			//remove also the first | (pipe)
 			if (v != "")
 			{
+ 				var tauxKM:String = '---', tauxHeure:String = '---';
+				if (v.substr(0, 3) == "INT" ) {
+					tauxKM = "0.43";
+					tauxHeure = "21.00";
+				}
+				getobj(_wins[10], "INP", 184).xval = tauxKM;
+				getobj(_wins[10], "INP", 185).xval = tauxHeure;
+
 				if (isNaN(parseInt(v)))
 				{
 					v = v.substr(0, 3) + zeropad((parseInt(v.substr(3)) + 1), 3);
