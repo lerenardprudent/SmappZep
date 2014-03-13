@@ -242,7 +242,7 @@
 			16 - activity filter (p21)
 			17 - assets filter (p22)
 			18 - quest answers (p50)
-			19 - actions users (p23)
+			19 - actions users (p67)
 			20 - actions assets (p24)
 			21 - actions agenda (p25)
 			22 - user lookup (p7)
@@ -315,7 +315,7 @@
 		
 		private function check_if_test_mode():void
 		{
-			var flagFilename:String = "mode_test";
+			var flagFilename:String = ".mode_test";
 			var urlRequest:URLRequest = new URLRequest(flagFilename);
 			var urlLoader:URLLoader = new URLLoader();
 			urlLoader.dataFormat = URLLoaderDataFormat.TEXT;

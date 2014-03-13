@@ -416,7 +416,6 @@ private function obactchk(ob, obn, win):void
 					disableobj(win, a[i][0], a[i][1]);
 				}
 			}
-			break;			
 		default:
 			break;
 	}
@@ -1248,8 +1247,23 @@ private function obactbtn(ob, obn, win):void
 			break;	
 			
 		case "BTN_709":			//user actions - interviewer reassignment
-			pv = "fn175¦" + trim(getobj(win, "INP", 700).xval) + "¦" + trim(getobj(win, "INP", 705).xval);
-			actdbpost(_apppath + "dbactions.php", pv);
+			var intervA:String = trim((getobj(_wins[19], "INP", 700) as finp1).xval);
+			var intervB:String = trim((getobj(_wins[19], "INP", 705) as finp1).xval);
+			if (intervA.substr(0, 3) != "INT" || intervB.substr(0,3) != "INT") {
+				alert(_wins[0], "Veuillez choisir deux intervieweurs.", "");
+				return;
+			}
+			else if ( intervA == intervB ) {
+				alert(_wins[0], "Veuillez choisir deux intervieweurs différents.", "");
+				return;
+			}
+			if ( getobj(_wins[25], "RAD", 664).xval == 0 ) { // Will check the filtered button by default
+				getobj(_wins[25], "RAD", 663).xval = 1;
+			}
+			pozwin(_wins[25], true, true, 0, 0, 1, 0);
+			showwin(_wins[25], true, 1, 0);
+			showblocker(true);
+			_acttarget = "USRACTREAFFECT";
 			break;
 		case "BTN_690":			//user actions - batch activities export
 			var csv:Boolean = getobj(_wins[19], "RAD", 682).xval;
@@ -1697,6 +1711,28 @@ private function actionapplyto():void
 				}
 			}
 		}
+	}
+	else if (_acttarget == "USRACTREAFFECT")
+	{
+		var act:String = "ACTREAFFECT";
+		var intervA:String = trim((getobj(_wins[19], "INP", 700) as finp1).xval);
+		var intervB:String = trim((getobj(_wins[19], "INP", 705) as finp1).xval);
+		var reaffectFiltered:Boolean = (getobj(_wins[25], "RAD", 663).xval == 1);		//filtered list
+		var usersCrit:String = ( reaffectFiltered ? _dbflt[0] /* Filter conditions as string */ : selrecsarray(_wins[9], "LST", 79) /* Selected users' ids */ );
+		if ( usersCrit != "" ) {
+			dbloadlist(act, _dbpage[1], _dbpagelen[1], usersCrit, _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, reaffectFiltered ? 1 : 0);
+		}
+		/*
+			dbloadlist(act, _dbpage[1], _dbpagelen[1], _dbflt[0], _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, 1);
+		}
+		else if 		//selected items
+		{
+			var userIdList:String = selrecsarray(_wins[9], "LST", 79);
+			if (userIdList != "") {
+				dbloadlist(act, _dbpage[1], _dbpagelen[1], userIdList, _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, 0);
+			}
+		}
+		*/
 	}
 	showwin(_wins[25], false, 1, 0);
 	showblocker(false);
@@ -2160,6 +2196,10 @@ private function dbloadlist(tbl:String, po:int, ps:int, flt:String, srt:String, 
 	{
 		pv = "fn261¦";
 	}
+	else if (tbl == "ACTREAFFECT")
+	{
+		pv = "fn176¦";
+	}
 	else
 	{
 		return;
@@ -2373,7 +2413,7 @@ private function actdbposted(e:Event):void
 	d = e.target.data;
 	if (d.substr(0, 4) != "-er-")
 	{
-		if (d == "-ok-fn175-" || d == "-ok-fn120-" || d == "-ok-fn121-") { alert(_wins[0], "Action completée.", ""); }
+		if (d == "-ok-fn176-" || d == "-ok-fn120-" || d == "-ok-fn121-") { alert(_wins[0], "Action effectuée.", ""); }
 		actiondb(e.target.data);
 	}
 	else
@@ -2574,14 +2614,13 @@ private function actiondb(d:String):void
 			v = d.substr(j + 1);			//remove also the first | (pipe)
 			if (v != "")
 			{
- 				var tauxKM:String = '---', tauxHeure:String = '---';
+				 var tauxKM:String = '---', tauxHeure:String = '---';
 				if (v.substr(0, 3) == "INT" ) {
 					tauxKM = "0.43";
 					tauxHeure = "21.00";
 				}
 				getobj(_wins[10], "INP", 184).xval = tauxKM;
 				getobj(_wins[10], "INP", 185).xval = tauxHeure;
-
 				if (isNaN(parseInt(v)))
 				{
 					v = v.substr(0, 3) + zeropad((parseInt(v.substr(3)) + 1), 3);
@@ -2701,7 +2740,7 @@ private function actiondb(d:String):void
 			lst = "";
 		}
 		getobj(_wins[13], "LST", 285).xval = lst;		//fill table
-		_wins[13].title = "<b>Activitées</b>          [ " + _dbrows[1] + " ]";
+		_wins[13].title = "<b>Activités</b>          [ " + _dbrows[1] + " ]";
 	}
 	else if (da == "-ok-fn203-")		//get actvity record ok
 	{
@@ -2866,7 +2905,8 @@ private function lookup2form(win):void
 	var sr;
 	if (win == _wins[22])
 	{
-		sr = getobj(_wins[22], "LST", 23).selrow;
+		var lst:flst1 = getobj(_wins[22], "LST", 23);
+		sr = lst.selrow;
 		if (sr == null) { return; }
 		if (_dblookuptg[0] == _wins[14])		//activities item edit
 		{
@@ -3075,7 +3115,9 @@ private function selrecsarray(win, ot, oi):String
 	si = [];
 	for (i = 0; i < sr.length; ++i)
 	{
-		si[si.length] = sr[i][0];
+		if ( sr[i] != null ) {
+			si[si.length] = sr[i][0];
+		}
 	}
 	si = si.join("·");
 	return si;

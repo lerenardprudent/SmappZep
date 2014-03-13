@@ -1,10 +1,10 @@
 <?php header("Content-type: text/html; charset=utf-8");
 
+date_default_timezone_set('America/Montreal');
 
 //SELECT field1, field2 FROM table_name WHERE DATEDIFF( now( ) , datefield ) >=8
 //SELECT NOW() + INTERVAL 2 YEAR
 //select date(tstamp), sum(value) from your_table group by date(tstamp);
-
 
 	function rep_chars($needle, $replace, $haystack)
 	{
@@ -524,7 +524,7 @@
 		$retv = "-er-sql-";
 		$whr = "";
 		
-		$querySQL = "select distinct idusr, nameusr, pphase from activity where idp='" .$par[1]. "' order by pphase desc";
+		$querySQL = "select distinct idusr, nameusr, pphase from activity where idp='" .$par[1]. "' order by pphase desc, id desc";
 		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if($result)
 		{
@@ -555,6 +555,7 @@
 		if ($par[1] != "PAR" && $par[1] != "POT")
 		{
 			$querySQL = "select idusr from " .$userstbl. " where type = '" .$par[1]. "' order by idusr desc limit 1" ;
+			debug( $querySQL, false );
 		}
 		else
 		{
@@ -1364,7 +1365,6 @@
 			for ($j = 0; $j < count($sta); $j++)
 			{
 				$querySQLx = "select id from activity where idusr = '" . $itw[$i][0] . "' and pxgroup = '". $coh . "' and (pstep = 'INT' or pstep = 'FIN') and pstatus = '" .$sta[$j]. "' and pphase = '".$temp."'";
-				//file_put_contents('debug_out', $querySQLx);
 				//$querySQLx = "select id from users where (step = 'INT' or step = 'FIN') and phase = 'T-03' and status = '" .$sta[$j]. "' and cust8 like '" . $itw[$i][0] . "%'";
 				$resultx = @mysql_query($querySQLx) or die ("-er-sql-" . mysql_error());
 				$trows = mysql_num_rows($resultx);
@@ -1464,9 +1464,167 @@
 				{
 					$retv = "-ok-fn175-";
 				}
+				
 			}
 		}
 		return $retv;
+	}
+	
+	function fn176($par)			//user actions - reasign interviewer for filtered/selected users
+	{
+		global $userstbl;
+		$retv = "-er-sql-";
+		$whr = "";
+		backupusers();
+		backupactions();
+		debug('=== fn176() ===', false);
+		$numParams = count($par);
+
+		$interviewerA = $par[$numParams - 3];
+		$interviewerB = $par[$numParams - 2];
+		$filterUsers = $par[$numParams - 1];
+		debug( "Reassigning '".$interviewerA."' -> '".$interviewerB."'");
+		$querySQL = "select id, idusr, fname, lname from ".$userstbl." where idusr = '" . $interviewerB . "'";
+		debug( "Verifying that '".$interviewerB."' exists:\n   ".$querySQL );
+		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());	
+		$retv = "-er-fn176-";
+		$num_intervieweurs = mysql_num_rows($result);
+		if ($result && $num_intervieweurs == 1 ) {
+			$row = mysql_fetch_array($result);
+			$interviewerB_fname = $row['fname'];
+			$interviewerB_lname = $row['lname'];
+			$interviewerB_name = $interviewerB_fname." ".$interviewerB_lname;
+			$interviewerB_id = $row['id'];
+			debug("Found interviewerB: \"".$interviewerB_name."\"");
+		
+			if ( $filterUsers ) {
+				$whr = filteruser($par[3]);
+			}
+			else {
+				$wr = explode("·", $par[3]);
+				for ($i = 0; $i < count($wr); $i += 1) {
+					$wr[$i] = "id='" .$wr[$i]. "'";
+				}
+				$whr = "where " . implode(" or ", $wr);		
+			}
+			$querySQLw = "select * from " .$userstbl. " " .$whr;
+			$resultw = @mysql_query($querySQLw);
+			$allUserIds = pull_from_db_result($resultw, ['idusr','fname','lname']);
+			$num_usagers = mysql_num_rows($resultw);
+			debug("Processing ".$num_usagers.($filterUsers ? " filtered users: " : " selected users: ").implode(', ', $allUserIds));
+			$tempTableName = 'usagersCibles';
+		
+			$querySQLx = "select id, idusr, phase, fname, lname, xgroup, step, status, type, concat('" .$interviewerB. "', substring(cust8,7)) as newcust8 from (".$querySQLw.") as ".$tempTableName.
+							" where cust8 like '" .$interviewerA. "%' and type = 'PAR' and (status = 'ACT' or status = 'ARE')";
+			
+			$resultx = @mysql_query($querySQLx);		// or die ("-er-sql-" . mysql_error());
+			$num_particip = mysql_num_rows($resultx);
+			debug( $num_particip." participant(s) found where ".$interviewerA." is responsible: ".$querySQLx);
+			
+			$reassignment_proc_error = false;
+			if ($resultx) {
+				while (!$reassignment_proc_error && $row = mysql_fetch_array($resultx)) {
+					$partiId = $row['id']; $partiIdu = $row['idusr']; $partiPhase = $row['phase']; $partiName = $row['fname'].' '.$row['lname'];
+					$partiCoho = $row['xgroup']; $partiEtape = $row['step']; $partiStat = $row['status']; $partiType = $row['type']; // This should be 'PAR'
+					$newcust8 = $row['newcust8'];  $currDate = get_date_time('D'); $currTime = get_date_time('T'); 
+					debug("**** Processing participant '".$partiIdu."' (".$partiName.")");
+					
+					/* Create activity to record the reassignment */
+					if ( !can_assign_interviewer($partiEtape, $interviewerB, $partiStat, $partiName) ) {
+						debug("**** Cannot assign ".$partiUsr." to ".$interviewerB);
+					}
+					else {
+						$newActivParms = array( "", "", $interviewerB_id,
+												$partiId, $interviewerB, $partiIdu,
+												$interviewerB_name, $partiName, "EVT",
+												"FIN", "SYS", "GEN",
+												$partiType, $partiPhase, $partiEtape,
+												$partiStat, "ASSIGNÉ INTERVIEWER", $currDate,
+												$currTime, $currDate, $currTime,
+												"", "", "", "", "", "", "", "", "",
+												"", $partiCoho, "Activité créée par système suite à réaffectation.");
+						debug("--== Creating activity...");
+						if ( fn204($newActivParms) != '-ok-fn204-' ) {
+							$reassignment_proc_error = true;
+							continue;
+						}
+					
+						/* Activity record created. Now let's update the user record with the new interviewer */
+						$querySQLy = "update ".$userstbl." set cust8 = '".$newcust8."' where idusr = ".$partiIdu;
+						$resulty = @mysql_query($querySQLy);
+						$num_users_updated = mysql_affected_rows();
+						debug( "--== Update user at ".$partiPhase." command (".$num_users_updated." updated): ".$querySQLy );
+
+						/* 
+						   Update any activities involving the participant that satisfy all of the following criteria:
+						   - Interviewer A was assigned
+						   - Phase matches that of the participant
+						   - Participant status is either active or à retracer
+						   - Activity state is either current or planned
+						*/
+						$querySQLz = "update activity set idu = '" .$interviewerB_id. "', idusr = '" .$interviewerB. "', nameusr = '" .$interviewerB_name.
+										"' where idparti = '".$partiIdu."' and idusr = '" .$interviewerA. "' and pphase = '".$partiPhase."' and (pstatus = 'ACT' or pstatus = 'ARE') and (status = 'CUR' or status = 'PLA')";
+						$resultz = @mysql_query($querySQLz);
+						$num_activities_updated = mysql_affected_rows();
+						debug("--== Update activities command (".$num_activities_updated." updated): ".$querySQLz);
+					}
+				}
+				if ( !$reassignment_proc_error ) {
+					$retv = "-ok-fn176-";
+				}
+			}
+		}		
+		return $retv;
+	}
+	
+	function pull_from_db_result($db_res, $cols)
+	{
+		$pulled = array();
+		while ($row = mysql_fetch_array($db_res)) {
+			$sing = array();
+			for ($i = 0; $i < count($cols); $i++ ) {
+				array_push($sing, "'".$row[$cols[$i]]."'");
+			}
+			array_push($pulled, implode('|', $sing));
+		}
+		return $pulled;
+	}
+	
+	// Logic taken directly from inc_actions.as function validateform() as it pertains to interviewers
+	function can_assign_interviewer($etape, $idResp, $status, $name)
+	{
+		if ($etape == "INT" && (strpos($idResp,"INT") === false && strpos($idResp,"ADM") === false)) { return false; }
+		if ($etape == "REC" && (strpos($idResp,"REC") === false && strpos($idResp,"ADM") === false)) { return false; }
+		if($status != "ACT") { return false;}
+		if(empty($name)) { return false; }
+		return true;
+	}
+	
+	function get_date_time( $date_or_time )
+	{
+		if ($date_or_time == 'D') {
+			return date("Y-m-d");
+		}
+		
+		$localtime = localtime();
+		$hour = $localtime[2];
+		$min = $localtime[1];
+		$timeStr = ( $hour < 10 ? '0' : '' ).$hour.":".($min < 10 ? '0' : '').$min;
+		return $timeStr;
+	}
+	
+	function debug($str, $append = true)
+	{
+		global $debug_on;
+		
+		if ( $debug_on ) {
+			if ( $append ) {
+				file_put_contents('debug_out2', $str."\n", FILE_APPEND);
+			}
+			else {
+				file_put_contents('debug_out2', $str."\n");
+			}
+		}
 	}
 	
 	function fn177($par)			//recruitment planning html
@@ -2725,7 +2883,7 @@
 		$result = mysql_query("insert into " .$table. " (foo, bar, boo, far) select foo, bar, boo, far from " .$table. " where id = '" .$id. "'");
 	}
 	
-	
+	$debug_on = file_exists('.mode_test');
 	$userstbl = "users";		//usersgpmt, users, ...
 	$retvar = "-er-post-";
 	$pvarx = "";
@@ -2831,6 +2989,10 @@
 		elseif ($pvarx[0] == "fn175")			//reassign interviewer
 		{
 			$retvar = fn175($pvarx);
+		}
+		elseif ($pvarx[0] == "fn176")			//reassign interviewer
+		{
+			$retvar = fn176($pvarx);
 		}
 		elseif ($pvarx[0] == "fn177")			//recruitment plannng html
 		{
