@@ -2574,11 +2574,13 @@ private function actiondb(d:String):void
 				lst = lst.split("|");
 				for (i = 0; i < lst.length; ++i) { lst[i] = lst[i].split("¦"); }
 			}
+			_userLookupNumResults = lst.length;
 		}
 		else
 		{
 			_dbrows[3] = 0;
 			lst = "";
+			_userLookupNumResults = 0;
 		}
 		getobj(_wins[22], "LST", 23).xval = lst;		//fill table
 		_wins[22].title = "<b>Enregistrement(s) trouvé(s)</b>          [ " + _dbrows[3] + " ]"
@@ -2907,7 +2909,14 @@ private function lookup2form(win):void
 	{
 		var lst:flst1 = getobj(_wins[22], "LST", 23);
 		sr = lst.selrow;
-		if (sr == null) { return; }
+		if (sr == null) { 
+			if ( _userLookupNumResults == 1 && lst.xval.length == 1 ) {
+				sr = lst.xval[0];
+			}
+			else {
+				return; 
+			}
+		}
 		if (_dblookuptg[0] == _wins[14])		//activities item edit
 		{
 			if (_dblookuptg[1] == "ACTRES")

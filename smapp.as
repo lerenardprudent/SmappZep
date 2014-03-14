@@ -118,7 +118,8 @@
 		private var _dbsortdir:Array = ["","","","",""];			//sort direction: 0-participants, 1-agenda, 2-assets, 3-usr lookup, 4-address lookup
 		private var _dbrows:Array = [0, 0, 0, 4, 0];				//db total (filtered) rows:  0-participants, 1-agenda, 2-assets, 3-usr lookup, 4-address lookup
 		private var _dblookuptg:Array = [];
-		private var _dbxfile:Array = ["","","","",""];
+		private var _dbxfile:Array = ["", "", "", "", ""];
+		private var _userLookupNumResults:uint = 0;
 		
 		//------------------------------
 		
