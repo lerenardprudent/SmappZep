@@ -1671,6 +1671,53 @@ date_default_timezone_set('America/Montreal');
 		return $retv;
 	}
 	
+	function fn178($par)			//user actions - reasign interviewer for filtered/selected users
+	{
+		global $userstbl;
+		$retv = "-er-sql-";
+		$whr = "";
+		backupusers();
+		backupactions();
+		debug('=== fn178() ===', false);
+		$numParams = count($par);
+
+		$filterUsers = $par[$numParams - 1];
+		
+		if ( $filterUsers ) {
+			$whr = filteruser($par[3]);
+		}
+		else {
+			$wr = explode("·", $par[3]);
+			for ($i = 0; $i < count($wr); $i += 1) {
+				$wr[$i] = "id='" .$wr[$i]. "'";
+			}
+			$whr = "where " . implode(" or ", $wr);		
+		}
+		$querySQL = "select * from " .$userstbl. " " .$whr." and (type = 'PAR' or type = 'POT')";
+		$result = @mysql_query($querySQL);
+		$num_usagers = mysql_num_rows($result);
+		$out_file = 'adresses.json';
+		file_put_contents($out_file, "{\n   \"nmb_adresses\" : \"".$num_usagers."\",\n   \"adresses\" :\n    [\n");
+		$count = 1;
+		while ($row = mysql_fetch_array($result)) {
+			$line = "      {\n".
+					"       \"id\"      : \"".$row['idusr']."\",\n".
+					"       \"type\"    : \"".$row['type']."\",\n".
+					"       \"cohorte\" : \"".$row['xgroup']."\",\n".
+					"       \"temps\"   : \"".$row['phase']."\",\n".
+					"       \"adresse\" : \"".implode(" ", [$row['haddress'], $row['hcity'], $row['hstate'], $row['hpostal']])."\"\n".
+					"      }";
+			$line .= ( $count < $num_usagers ? ",\n" : "\n" );
+			file_put_contents($out_file, $line, FILE_APPEND);
+			$count++;
+		}
+		file_put_contents($out_file, "    ]\n}", FILE_APPEND);
+		
+		debug("Got ".$num_usagers." results");
+		$retv = "-ok-fn178-";
+		return $retv;
+	}
+	
 	function htmusr5($v, $fi)		//planning html
 	{
 		$td = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
@@ -2997,6 +3044,10 @@ date_default_timezone_set('America/Montreal');
 		elseif ($pvarx[0] == "fn177")			//recruitment plannng html
 		{
 			$retvar = fn177($pvarx);
+		}
+		elseif ($pvarx[0] == "fn178")			//get addresses of users
+		{
+			$retvar = fn178($pvarx);
 		}
 		elseif ($pvarx[0] == "fn180")			//save addresses visited
 		{

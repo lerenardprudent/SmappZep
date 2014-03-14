@@ -1,0 +1,62 @@
+{
+   "nmb_adresses" : "8",
+   "adresses" :
+    [
+      {
+       "id"      : "207",
+       "type"    : "PAR",
+       "cohorte" : "C-01",
+       "temps"   : "T-03",
+       "adresse" : "302-390 Rue Caisse Verdun QC H4G 3H3"
+      },
+      {
+       "id"      : "208",
+       "type"    : "PAR",
+       "cohorte" : "C-01",
+       "temps"   : "T-03",
+       "adresse" : "302-309 Rue Caisse Verdun QC H4G 3M3"
+      },
+      {
+       "id"      : "223",
+       "type"    : "PAR",
+       "cohorte" : "C-01",
+       "temps"   : "T-02",
+       "adresse" : "102-11 Place Westwood Montréal QC H4X 1L9"
+      },
+      {
+       "id"      : "298",
+       "type"    : "POT",
+       "cohorte" : "C-01",
+       "temps"   : "T-01",
+       "adresse" : "411 Rue Henri-Duhamel Verdun QC H4G 3L2"
+      },
+      {
+       "id"      : "326",
+       "type"    : "POT",
+       "cohorte" : "C-01",
+       "temps"   : "T-01",
+       "adresse" : "2400 Road Herron Dorval QC "
+      },
+      {
+       "id"      : "337",
+       "type"    : "POT",
+       "cohorte" : "C-01",
+       "temps"   : "T-01",
+       "adresse" : "2400 Road Herron Dorval QC "
+      },
+      {
+       "id"      : "353",
+       "type"    : "POT",
+       "cohorte" : "C-01",
+       "temps"   : "T-01",
+       "adresse" : "2400 Road Herron Dorval QC "
+      },
+      {
+       "id"      : "469",
+       "type"    : "PAR",
+       "cohorte" : "C-01",
+       "temps"   : "T-03",
+       "adresse" : "105-15 Rue De La Poudrière Verdun QC H4G 3J5"
+      }
+    ]
+}

@@ -4,8 +4,9 @@
     <title>SMAPP - Visualisations des lieux de domiciles des participants sélectionnés</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <script src="obj/jquery-1.8.0.min.js"></script>
+    <link rel="stylesheet" href="obj/leaflet.css" />
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4qnbkOe5X7pll7qyIFtkeLzjzkbPnAGo&amp;libraries=places,drawing,geometry,panoramio,weather&region=ca&sensor=false"></script>
     <style>
       body { padding: 0; margin: 0; }
       html, body, #map { height: 100%; width: 100%; }
@@ -15,9 +16,12 @@
   <body>
     <div id="map"></div>
     <script>
+        var _geocoder = new google.maps.Geocoder();
             // create a map in the "map" div, set the view to a given place and zoom
-        var map = L.map('map').setView([45.51947, -73.56017],13);
+        var map = L.map('map').setView([45.51947, -73.56017],12);
         var latMin = null, latMax = null, lngMin = null, lngMax = null;
+        var _data, _numAddresses, _numGeocoded = 0, _participantId = null;
+        
         // add an OpenStreetMap tile layer
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -45,17 +49,90 @@
             }
         }
 
-        $.getJSON("addr_participants.geojson", function(json) {
-          L.geoJson(json, {onEachFeature: addPopup}).addTo(map);
-        });
-
+        function readAddresses()
+        {
+          var fileContents = null;
+          $.ajax({
+              url: "./adresses.json",
+              async: false,   // asynchronous request? (synchronous requests are discouraged...)
+              cache: false,   // with this, you can force the browser to not make cache of the retrieved data
+              mimeType: "textPlain",
+              dataType: "json",  // jQuery will infer this, but you can set explicitly
+              success: function( data, textStatus, jqXHR ) {
+                _data = data; // can be a global variable too...
+              },
+              error: function (xhr, ajaxOptions, thrownError) {
+                console.log(thrownError);
+              }
+          });
+          return fileContents;
+        }
+        
+        function geocodeAddress()
+        {
+          var addrData = _data.adresses[_numGeocoded];
+          console.info(_numGeocoded, addrData);
+          _geocoder.geocode( { 'address': addrData.adresse }, geocoderRespHandler );
+        }
+        
+        function geocoderRespHandler(results, status)
+        {
+          if (status == google.maps.GeocoderStatus.OK) {
+            geocodedCoords = results[0].geometry.location;
+            var lat = geocodedCoords.lat();
+            var lng = geocodedCoords.lng();
+            console.info("Geocoder result:", lat, lng);
+            
+            if ( latMin == null || lat < latMin ) {
+              latMin = lat;
+            }
+            if ( latMax == null || lat > latMax ) {
+              latMax = lat;
+            }
+            if ( lngMin == null || lng < lngMin ) {
+              lngMin = lng;
+            }
+            if ( lngMax == null || lng > lngMax ) {
+              lngMax = lng;
+            }
+            
+            var info = _data.adresses[_numGeocoded];
+            var GreenIcon = L.Icon.Default.extend({ options: {
+                  iconUrl: 'media/marker-icon-green.png',
+                  iconSize:     [41, 41]
+                }});
+            var greenIcon = new GreenIcon();
+            var markerOptions = ( info.type == "PAR" ? {} : { icon: greenIcon } );
+            var marker = L.marker([geocodedCoords.lat(), geocodedCoords.lng()], markerOptions );
+            marker.bindPopup("<i>Usager</i> : <b>" + info.type + "</b> " + info.id + "<br><i>Cohorte</i> : " + info.cohorte + "<br><i>Temps</i> : " + info.temps );
+            marker.addTo(map);
+          }
+          else {
+            console.info("Geocoding failed!");
+          }
+          
+          _numGeocoded += 1;
+            
+          if (_numGeocoded == _numAddresses) {
+            var southWest = L.latLng(latMin, lngMin), northEast = L.latLng(latMax, lngMax);
+            var bounds = L.latLngBounds(southWest, northEast);
+            map.fitBounds(bounds);
+          }
+          else {
+            geocodeAddress();
+          }
+        }
+        
         $(document).ready( function() {
-          var southWest = L.latLng(latMin, lngMin),
-            northEast = L.latLng(latMax, lngMax),
-            bounds = L.latLngBounds(southWest, northEast);
-          map.fitBounds(bounds);
+          $.ajaxSetup({'beforeSend': function(xhr){
+            if (xhr.overrideMimeType)
+              xhr.overrideMimeType("text/plain");
+            }
+          });
+          readAddresses();
+          _numAddresses = _data.nmb_adresses;
+          geocodeAddress();
       });
     </script>
   </body>
 </html>
-

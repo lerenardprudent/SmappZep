@@ -1229,7 +1229,13 @@ private function obactbtn(ob, obn, win):void
 			dbloadlist("ACT", _dbpage[1], _dbpagelen[1], _dbflt[1], _dbsort[1], _dbsortdir[1]);
 			break;
 		case "BTN_712":
-			getURL('carte.htm');
+			if ( getobj(_wins[25], "RAD", 664).xval == 0 ) { // Will check the filtered button by default
+				getobj(_wins[25], "RAD", 663).xval = 1;
+			}
+			pozwin(_wins[25], true, true, 0, 0, 1, 0);
+			showwin(_wins[25], true, 1, 0);
+			showblocker(true);
+			_acttarget = "USRACTGEOLOC";
 			break;
 		case "BTN_703":			//lookup users - user action win.
 		case "BTN_708":			//lookup users - user action win.
@@ -1722,17 +1728,15 @@ private function actionapplyto():void
 		if ( usersCrit != "" ) {
 			dbloadlist(act, _dbpage[1], _dbpagelen[1], usersCrit, _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, reaffectFiltered ? 1 : 0);
 		}
-		/*
-			dbloadlist(act, _dbpage[1], _dbpagelen[1], _dbflt[0], _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, 1);
+	}
+	else if (_acttarget == "USRACTGEOLOC")
+	{
+		var act:String = "ACTGEOLOCATE";
+		var showFiltered:Boolean = (getobj(_wins[25], "RAD", 663).xval == 1);		//filtered list
+		var usersCrit:String = ( showFiltered ? _dbflt[0] /* Filter conditions as string */ : selrecsarray(_wins[9], "LST", 79) /* Selected users' ids */ );
+		if ( usersCrit != "" ) {
+			dbloadlist(act, _dbpage[1], _dbpagelen[1], usersCrit, _dbsort[1], _dbsortdir[1], _dbxfile[1], showFiltered ? 1 : 0);
 		}
-		else if 		//selected items
-		{
-			var userIdList:String = selrecsarray(_wins[9], "LST", 79);
-			if (userIdList != "") {
-				dbloadlist(act, _dbpage[1], _dbpagelen[1], userIdList, _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, 0);
-			}
-		}
-		*/
 	}
 	showwin(_wins[25], false, 1, 0);
 	showblocker(false);
@@ -2200,6 +2204,10 @@ private function dbloadlist(tbl:String, po:int, ps:int, flt:String, srt:String, 
 	{
 		pv = "fn176¦";
 	}
+	else if (tbl == "ACTGEOLOCATE")
+	{
+		pv = "fn178¦";
+	}
 	else
 	{
 		return;
@@ -2413,7 +2421,7 @@ private function actdbposted(e:Event):void
 	d = e.target.data;
 	if (d.substr(0, 4) != "-er-")
 	{
-		if (d == "-ok-fn176-" || d == "-ok-fn120-" || d == "-ok-fn121-") { alert(_wins[0], "Action effectuée.", ""); }
+		if (d == "-ok-fn176-" || d == '-ok-fn178-' || d == "-ok-fn120-" || d == "-ok-fn121-") { alert(_wins[0], "Action effectuée.", ""); }
 		actiondb(e.target.data);
 	}
 	else
@@ -2696,6 +2704,9 @@ private function actiondb(d:String):void
 	else if (da == "-ok-fn177-")		//activities planning ok
 	{
 		getURL(_apppath + _dbxfile[0], "_blank");
+	}
+	else if (da == "-ok-fn178-") {
+		getURL('carte.htm');
 	}
 	else if (da == "-ok-fn181-")		//user visited addresses
 	{
