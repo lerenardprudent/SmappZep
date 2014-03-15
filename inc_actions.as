@@ -1737,6 +1737,9 @@ private function actionapplyto():void
 		if ( usersCrit != "" ) {
 			dbloadlist(act, _dbpage[1], _dbpagelen[1], usersCrit, _dbsort[1], _dbsortdir[1], _dbxfile[1], showFiltered ? 1 : 0);
 		}
+		else {
+			alert(_wins[0], (showFiltered ? "Aucun critère de filtrage n'a été spécifié." : "Aucun item n'a été sélectionné."), "");			
+		}
 	}
 	showwin(_wins[25], false, 1, 0);
 	showblocker(false);

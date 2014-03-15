@@ -71,7 +71,7 @@
         function geocodeAddress()
         {
           var addrData = _data.adresses[_numGeocoded];
-          console.info(_numGeocoded, addrData);
+          console.info(_numGeocoded, addrData.adresse);
           _geocoder.geocode( { 'address': addrData.adresse }, geocoderRespHandler );
         }
         
@@ -104,8 +104,12 @@
             var greenIcon = new GreenIcon();
             var markerOptions = ( info.type == "PAR" ? {} : { icon: greenIcon } );
             var marker = L.marker([geocodedCoords.lat(), geocodedCoords.lng()], markerOptions );
-            marker.bindPopup("<i>Usager</i> : <b>" + info.type + "</b> " + info.id + "<br><i>Cohorte</i> : " + info.cohorte + "<br><i>Temps</i> : " + info.temps );
+            marker.bindPopup("ID : <b>" + info.id + "</b><br>Type : <b>" + info.type + "</b><br>Cohorte : <b>" + info.cohorte + "</b><br>Temps : <b>" + info.temps + "</b>");
             marker.addTo(map);
+          }
+          else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+            setTimeout(geocodeAddress, 200);
+            return;
           }
           else {
             console.info("Geocoding failed!");
@@ -131,7 +135,9 @@
           });
           readAddresses();
           _numAddresses = _data.nmb_adresses;
-          geocodeAddress();
+          if ( _numAddresses > 0 ) {
+            geocodeAddress();
+          }
       });
     </script>
   </body>

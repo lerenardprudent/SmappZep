@@ -1697,21 +1697,34 @@ date_default_timezone_set('America/Montreal');
 		$result = @mysql_query($querySQL);
 		$num_usagers = mysql_num_rows($result);
 		$out_file = 'adresses.json';
-		file_put_contents($out_file, "{\n   \"nmb_adresses\" : \"".$num_usagers."\",\n   \"adresses\" :\n    [\n");
+		file_put_contents($out_file, "{\n  \"adresses\" :\n    [\n");
 		$count = 1;
+		$num_addr = 0;
 		while ($row = mysql_fetch_array($result)) {
-			$line = "      {\n".
-					"       \"id\"      : \"".$row['idusr']."\",\n".
-					"       \"type\"    : \"".$row['type']."\",\n".
-					"       \"cohorte\" : \"".$row['xgroup']."\",\n".
-					"       \"temps\"   : \"".$row['phase']."\",\n".
-					"       \"adresse\" : \"".implode(" ", [$row['haddress'], $row['hcity'], $row['hstate'], $row['hpostal']])."\"\n".
-					"      }";
-			$line .= ( $count < $num_usagers ? ",\n" : "\n" );
-			file_put_contents($out_file, $line, FILE_APPEND);
+			if (strpos($row['haddress'], "nconnu") === false ) {
+				$addrElems = array($row['haddress']);
+				$extra = array($row['hcity'], $row['hstate'], $row['hpostal']);
+				for ($i = 0; $i < count($extra); $i++) {
+					if (strpos($extra[$i], "nconnu") === false ) {
+						array_push($addrElems, $extra[$i]);
+					}
+				}		
+				$address = implode(" ", $addrElems );
+				
+				$line = "      {\n".
+						"       \"id\"      : \"".$row['idusr']."\",\n".
+						"       \"type\"    : \"".$row['type']."\",\n".
+						"       \"cohorte\" : \"".$row['xgroup']."\",\n".
+						"       \"temps\"   : \"".$row['phase']."\",\n".
+						"       \"adresse\" : \"".$address."\"\n".
+						"      }";
+				$line .= ( $count < $num_usagers ? ",\n" : "\n" );
+				file_put_contents($out_file, $line, FILE_APPEND);
+				$num_addr++;
+			}
 			$count++;
 		}
-		file_put_contents($out_file, "    ]\n}", FILE_APPEND);
+		file_put_contents($out_file, "    ],\n  \"nmb_adresses\" : \"".$num_addr."\"\n}", FILE_APPEND);
 		
 		debug("Got ".$num_usagers." results");
 		$retv = "-ok-fn178-";
