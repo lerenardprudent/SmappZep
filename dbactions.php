@@ -344,7 +344,12 @@ date_default_timezone_set('America/Montreal');
 		
 		if ($par[34] != "" && $par[34] != "")
 		{
-			$querySQL = "select * from pczone where pc='" .$par[34]. "'";
+			$pc = trim($par[34]);
+			if ( strlen($pc) == 6 ) { // Insert space in post code
+				$pc = substr($pc, 0, 3).' '.substr($pc, 3);
+			}
+	
+			$querySQL = "select * from pczone where pc='" .$pc. "'";
 			$resultc = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 			if (mysql_num_rows($resultc) == 1)
 			{
