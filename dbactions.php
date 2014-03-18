@@ -120,20 +120,16 @@ date_default_timezone_set('America/Montreal');
 		
 		if ($flt[55] != "---")
 		{
-			$chklst = explode("  ", $flt[55]);
+			$chklst = explode("|", $flt[55]);
 			$lc = count($chklst);
-			if ($lc > 1)
+			debug("In here with ".$lc." parts", false);
+			for ($j = 0; $j < $lc; $j++)
 			{
-				for ($j = 0; $j < $lc; $j++)
-				{
-					$chklst[$j] = "checklist like '%" .trim($chklst[$j]). "%'";
-				}
-				$chklst = "(" . implode(" and ", $chklst) . ")";
+				$chk = str_replace(" ", "%", str_replace("}", "%}", str_replace("{", "{%", trim($chklst[$j]))));
+				$chklst[$j] = "checklist like '%" .$chk. "%'";
 			}
-			else
-			{
-				$chklst = "checklist like '%" .$flt[55]. "%'";
-			}
+			$chklst = "(" . implode(" and ", $chklst) . ")";
+			debug("Final: ".$chklst);
 		}
 		else
 		{

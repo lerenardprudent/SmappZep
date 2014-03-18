@@ -336,7 +336,9 @@ private function obactstp(ob, obn, win):void
 	{
 		if (obn == "STP_672") {
 			var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
-			setChecklist(tempStp.xval);
+			saveChecklistToTemp();
+			_checklistTempsCourant = tempStp.xval;
+			setChecklist(/*tempStp.xval*/);
 		}
 	}
 }
@@ -871,31 +873,45 @@ private function obactbtn(ob, obn, win):void
 			
 		case "BTN_181":			//signed documents lookup
 			var tempUsager:fstp1 = getobj(_wins[10], "STP", 101);
-			var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
-			var tempCourantUsager = tempUsager.vidx;
-			tempStp.xval = 'T-0' + tempCourantUsager.toString();
-			tempStp.xmax = tempCourantUsager;
-			
-			_lookuptg = [getobj(win, "INP", 180)];
-			v = _lookuptg[0].xval;
-			var checklist:String = v;
-			if ( checklist.length > 0 && checklist.indexOf(":") == -1 ) { // Has checklist format been updated?
-				checklist = correctChecklist(checklist, tempUsager.xval);
-				(getobj(_wins[10], "INP", 180) as finp1).xval = checklist;
+			var tempVal:int = 0;
+			if ( tempUsager.xval.match(/T-[0-9][0-9]/) != null ) {
+				tempVal = parseInt(tempUsager.xval.substr(2));
 			}
-			
-			var checklistHolder:finp1 = getobj(_wins[10], "INP", 180);
-			var checklistStr = checklistHolder.xval;
-			var tmpChecklistHolder:finp1 = getobj(_wins[27], "INP", 674);
-			tmpChecklistHolder.xval = checklistStr;
-			setChecklist(tempUsager.xval);
-			pozwin(_wins[27], true, true, 0, 0, 1, 0);
-			showwin(_wins[27], true, 1, 0);
-			showblocker(true);
+			if (tempVal > 0) {
+				var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
+				var tempCourantUsager = tempUsager.vidx;
+				tempStp.xval = 'T-0' + tempCourantUsager.toString();
+				tempStp.xmax = tempCourantUsager;
+				
+				_lookuptg = [getobj(win, "INP", 180), getobj(_wins[27], "INP", 677)];
+				v = _lookuptg[0].xval;
+				var checklist:String = v;
+				if ( checklist.length > 0 && checklist.indexOf(":") == -1 ) { // Has checklist format been updated?
+					checklist = correctChecklist(checklist, tempUsager.xval);
+					_lookuptg[0].xval = checklist;
+				}
+				_lookuptg[1].xval = _lookuptg[0].xval; // Copy over to temp holder
+				//var checklistHolder:finp1 = getobj(_wins[10], "INP", 180);
+				//var checklistStr = checklistHolder.xval;
+				//var tmpChecklistHolder:finp1 = getobj(_wins[27], "INP", 674);
+				//var tmpChecklistHolder:finp1 = getobj(_wins[27], "INP", 677);
+				//tmpChecklistHolder.xval = checklistStr;
+				_checklistTempsCourant = tempStp.xval;
+				setChecklist(); // setChecklist(tempUsager.xval);
+				pozwin(_wins[27], true, true, 0, 0, 1, 0);
+				showwin(_wins[27], true, 1, 0);
+				showblocker(true);
+			}
+			else {
+				alert(_wins[0], "Veuillez saisir une valeur pour le champ «Temps» avant de procéder.", "");
+			}
 			break;
-			
 		case "BTN_415":			//signed documents lookp
-			_lookuptg = [getobj(win, "INP", 414)];
+			_lookuptg = [getobj(win, "INP", 414), getobj(_wins[27], "INP", 674)];
+			_lookuptg[1].xval = ( _lookuptg[0].xval != '---' ? _lookuptg[0].xval : "" ); // Copy over to temp holder
+			_checklistTempsCourant = 'T-01';
+			getobj(_wins[27], "STP", 672).xval = _checklistTempsCourant;
+			setChecklist();
 			pozwin(_wins[27], true, true, 0, 0, 1, 0);
 			showwin(_wins[27], true, 1, 0);
 			showblocker(true);
@@ -1391,12 +1407,12 @@ private function obactbtn(ob, obn, win):void
 			showwin(win, false, 1, 0);
 			showblocker(false);
 			break;
-		case "BTN_675":
+		case "BTN_675":          //Sauvegarder les réglages
 			saveChecklistToTemp();
-			break;
-		case "BTN_676":			//signed documents window button
-			_lookuptg[0].xval = (getobj(_wins[27], "INP", 674) as finp1).xval;
-		
+			//getobj(_wins[27], "INP", 674).xval = getobj(_wins[27], "INP", 677).xval;
+			_lookuptg[0].xval = _lookuptg[1].xval.replace( new RegExp(/[\|]*T-[0-9][0-9]:\{\}[\|]*[ ]*/g ), "");
+			
+		case "BTN_676":			//Fermer la fenêtre
 			showwin(_wins[27], false, 1, 0);
 			showblocker(false);
 			break;
@@ -3146,17 +3162,18 @@ private function selrecsarray(win, ot, oi):String
 	return si;
 }
 
-private function setChecklist(temp:String):void
+private function setChecklist():void
 {
-	var v:String = (getobj(_wins[27], "INP", 674) as finp1).xval;
+	var v:String = _lookuptg[1].xval;
 	var subChecklistStr:String = "";
-	var t:int = v.indexOf(temp);
+	var temps:fstp1 = getobj(_wins[27], "STP", 672);
+	var t:int = v.indexOf(temps.xval);
 	if ( t >= 0 ) {
 		var cStart:int = v.indexOf('{', t) + 1;
 		var cEnd:int = v.indexOf('}', cStart);
 		subChecklistStr = v.substring(cStart, cEnd);
 	}
-	trace("Got", v, "Setting for time", temp, "based on", subChecklistStr);
+	trace("Got", v, "Setting for time", temps.xval, "based on", subChecklistStr);
 	if (subChecklistStr.indexOf("RECH") != -1) { getobj(_wins[27], "CHK", 667).xval = 1; } else { getobj(_wins[27], "CHK", 667).xval = 0; }
 	if (subChecklistStr.indexOf("RAMQ") != -1) { getobj(_wins[27], "CHK", 668).xval = 1; } else { getobj(_wins[27], "CHK", 668).xval = 0; }
 	if (subChecklistStr.indexOf("AREC") != -1) { getobj(_wins[27], "CHK", 669).xval = 1; } else { getobj(_wins[27], "CHK", 669).xval = 0; }
@@ -3176,25 +3193,23 @@ private function correctChecklist(v:String, tempCourant:String):String
 
 private function saveChecklistToTemp():void
 {
-	var timeStp:fstp1 = getobj(_wins[27], "STP", 672);
-	var timeChecklist:String = timeStp.xval;
 	var a = ["RECH", "RAMQ", "AREC", "SDIAG", "AUT"];
 	var v = [];
 	for (var i = 667; i <= 671; ++i)
 	{
 		if (getobj(_wins[27], "CHK", i).xval == 1) { v[v.length] = a[i - 667]; }
 	}
-	v = v.join("  ");
-	var tempChecklistHolder:finp1 = getobj(_wins[27], "INP", 674);
+	v = v.join(" ");
+	var tempChecklistHolder:finp1 = _lookuptg[1];
 	var tempCompleteChecklistStr:String = tempChecklistHolder.xval;
-	trace("Saving", v, "at time", timeChecklist, "Checklist before: ", tempCompleteChecklistStr);
-	var idx:int = tempCompleteChecklistStr.indexOf(timeChecklist);
+	trace("Saving", v, "at time", _checklistTempsCourant, "Checklist before: ", tempCompleteChecklistStr);
+	var idx:int = tempCompleteChecklistStr.indexOf(_checklistTempsCourant);
 	if ( idx < 0 ) {
-		tempCompleteChecklistStr += " " + timeChecklist + ": {" + v + "}";
+		tempCompleteChecklistStr += ( tempCompleteChecklistStr != "" ? "|" : "" ) + _checklistTempsCourant + ":{" + v + "}";
 	}
 	else {
-		var re:RegExp = new RegExp(timeChecklist + ":\{[0-9a-z ]+\}", "i");
-		tempCompleteChecklistStr = tempCompleteChecklistStr.replace(re, timeChecklist + ":{" + v + "}");
+		var re:RegExp = new RegExp(_checklistTempsCourant + ":\{[0-9A-Z \-]*\}", "i");
+		tempCompleteChecklistStr = tempCompleteChecklistStr.replace(re, _checklistTempsCourant + ":{" + v + "}");
 	}
 	tempChecklistHolder.xval = tempCompleteChecklistStr;
 	trace("Temp complete checklist updated to: ", tempCompleteChecklistStr);

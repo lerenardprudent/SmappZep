@@ -120,6 +120,7 @@
 		private var _dblookuptg:Array = [];
 		private var _dbxfile:Array = ["", "", "", "", ""];
 		private var _userLookupNumResults:uint = 0;
+		private var _checklistTempsCourant;
 		
 		//------------------------------
 		
