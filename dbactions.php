@@ -121,14 +121,21 @@ date_default_timezone_set('America/Montreal');
 		if ($flt[55] != "---")
 		{
 			$chklst = explode("|", $flt[55]);
+			$letters_or_spaces = "[a-z\ ]*";
+			$anything = ".*";
 			$lc = count($chklst);
 			for ($j = 0; $j < $lc; $j++)
 			{
-				$chk = str_replace(" ", "%", str_replace("}", "%}", str_replace("{", "{%", trim($chklst[$j]))));
-				$chklst[$j] = "checklist like '%" .$chk. "%'";
+				if ( trim($chklst[$j]) != "" ) {
+					//$chk = str_replace(" ", $letters_or_spaces, str_replace("}", $letters_or_spaces."\}", str_replace("{", "\{".$letters_or_spaces, trim($chklst[$j]))));
+					$chk = str_replace("~", $letters_or_spaces, 
+							str_replace("}", $letters_or_spaces."\}", 
+								str_replace("{", "\{".$letters_or_spaces, trim($chklst[$j])) ));
+					$chklst[$j] = "checklist regexp '".$anything.$chk.$anything. "'";
+				}
 			}
 			$chklst = "(" . implode(" and ", $chklst) . ")";
-			debug("Final: ".$chklst);
+			debug("Final: ".$chklst, false);
 		}
 		else
 		{

@@ -1409,8 +1409,8 @@ private function obactbtn(ob, obn, win):void
 			break;
 		case "BTN_675":          //Sauvegarder les réglages
 			saveChecklistToTemp();
-			//getobj(_wins[27], "INP", 674).xval = getobj(_wins[27], "INP", 677).xval;
-			_lookuptg[0].xval = _lookuptg[1].xval.replace( new RegExp(/[\|]*T-[0-9][0-9]:\{\}[\|]*[ ]*/g ), "");
+			_lookuptg[0].xval = _lookuptg[1].xval.replace( new RegExp(/[^\]*|T-[0-9][0-9]:\{\}[\|]*[ ]*[\$]*/g ), "");
+			trace("Checklist filter cleaned up:", _lookuptg[0].xval);
 			
 		case "BTN_676":			//Fermer la fenêtre
 			showwin(_wins[27], false, 1, 0);
@@ -3199,7 +3199,7 @@ private function saveChecklistToTemp():void
 	{
 		if (getobj(_wins[27], "CHK", i).xval == 1) { v[v.length] = a[i - 667]; }
 	}
-	v = v.join(" ");
+	v = v.join("~");
 	var tempChecklistHolder:finp1 = _lookuptg[1];
 	var tempCompleteChecklistStr:String = tempChecklistHolder.xval;
 	trace("Saving", v, "at time", _checklistTempsCourant, "Checklist before: ", tempCompleteChecklistStr);
@@ -3208,7 +3208,7 @@ private function saveChecklistToTemp():void
 		tempCompleteChecklistStr += ( tempCompleteChecklistStr != "" ? "|" : "" ) + _checklistTempsCourant + ":{" + v + "}";
 	}
 	else {
-		var re:RegExp = new RegExp(_checklistTempsCourant + ":\{[0-9A-Z \-]*\}", "i");
+		var re:RegExp = new RegExp(_checklistTempsCourant + ":\{[A-Z\~]*\}", "i");
 		tempCompleteChecklistStr = tempCompleteChecklistStr.replace(re, _checklistTempsCourant + ":{" + v + "}");
 	}
 	tempChecklistHolder.xval = tempCompleteChecklistStr;
