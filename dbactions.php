@@ -122,7 +122,6 @@ date_default_timezone_set('America/Montreal');
 		{
 			$chklst = explode("|", $flt[55]);
 			$lc = count($chklst);
-			debug("In here with ".$lc." parts", false);
 			for ($j = 0; $j < $lc; $j++)
 			{
 				$chk = str_replace(" ", "%", str_replace("}", "%}", str_replace("{", "{%", trim($chklst[$j]))));
@@ -3138,8 +3137,7 @@ date_default_timezone_set('America/Montreal');
 		elseif ($pvarx[0] == "fn403")			//load answers
 		{
 			$retvar = fn403($pvarx);
-		}
-		
+		}			
 		@mysql_close();
 	}
 	echo $retvar;
