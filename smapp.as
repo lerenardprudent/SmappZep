@@ -62,7 +62,7 @@
 		private var _dbpath = "http://treksoft.com/saut/";
 		private var _apppath = "http://treksoft.com/zeps/";
 		*/
-		private var _dbpath = "https://www.zepsom.org/";
+		private var _dbpath = "http://localhost/SmappZep/";
 		private var _apppath = _dbpath;
 		
 		private var _appid:String = "ZEPSOM";
@@ -134,12 +134,6 @@
 			//check_if_test_mode();
 			
 			if (stage) {
-				_onServer = ( stage.loaderInfo.url.indexOf("zepsom.org") >= 0 );
-				if ( _onServer ) {
-					_dbpath = ( _onServer ? "https://www.zepsom.org/" : "http://localhost/SmappZep/" );
-					_apppath = _dbpath;
-					browser_debug("Running on server: " + _dbpath + ", " + _apppath);
-				}
 				this.start();
 			}
 		}
@@ -147,6 +141,16 @@
 		public function start(ev:Event = null):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, start);
+			
+			_onServer = ( stage.loaderInfo.url.indexOf("zepsom.org") >= 0 );
+			if ( _onServer ) {
+				_dbpath = ( _onServer ? "https://www.zepsom.org/" : "http://localhost/SmappZep/" );
+				_apppath = _dbpath;
+				browser_debug("Running on server: " + _dbpath + ", " + _apppath);
+			}
+			else {
+				trace("Running on local machine");
+			}
 			
 			_cntxMenu.hideBuiltInItems();
 			contextMenu = _cntxMenu;

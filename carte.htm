@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SMAPP - Géolocalisation de participants</title>
+    <title>SMAPP - Visualisations des lieux de domiciles des participants sélectionnés</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="obj/jquery-1.8.0.min.js"></script>
@@ -104,7 +104,7 @@
             var greenIcon = new GreenIcon();
             var markerOptions = ( info.type == "PAR" ? {} : { icon: greenIcon } );
             var marker = L.marker([geocodedCoords.lat(), geocodedCoords.lng()], markerOptions );
-            marker.bindPopup("ID : <b>" + info.id + "</b><br>Type : <b>" + info.type + "</b><br>Cohorte : <b>" + info.cohorte + "</b><br>Temps : <b>" + info.temps + "</b>");
+            marker.bindPopup("ID : <b>" + info.id + "</b><br>" + (info.hasOwnProperty('nom') ? "Nom : " + "<b>" + info.nom + "</b><br>" : "" ) + "Type : <b>" + info.type + "</b><br>Cohorte : <b>" + info.cohorte + "</b><br>Temps : <b>" + info.temps + "</b>");
             marker.addTo(map);
           }
           else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
