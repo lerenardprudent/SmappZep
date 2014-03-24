@@ -1516,7 +1516,8 @@ date_default_timezone_set('America/Montreal');
 			}
 			$querySQLw = "select * from " .$userstbl. " " .$whr;
 			$resultw = @mysql_query($querySQLw);
-			$allUserIds = pull_from_db_result($resultw, ['idusr','fname','lname']);
+			$arr = array('idusr', 'fname', 'lname');
+			$allUserIds = pull_from_db_result($resultw, $arr);
 			$num_usagers = mysql_num_rows($resultw);
 			debug("Processing ".$num_usagers.($filterUsers ? " filtered users: " : " selected users: ").implode(', ', $allUserIds));
 			$tempTableName = 'usagersCibles';
@@ -2961,8 +2962,16 @@ date_default_timezone_set('America/Montreal');
 		$database = "zepsom_zeps";
 		$username="root";
 		$password = "tr3ks0ft";
+		$usernameServer ="zepsom_trksft";
+		$passwordServer = "tr3ks0ft";
+		$running_on_server = ( strpos( __FILE__, "public_html" ) > 0 );
+		if ( $running_on_server ) {
+			@mysql_connect($localhost, $usernameServer, $passwordServer);
+		}
+		else {
+			@mysql_connect($localhost, $username);
+		}
 		
-		@mysql_connect($localhost, $username);
 		@mysql_query("SET NAMES 'utf8'");
 		@mysql_select_db($database);
 		

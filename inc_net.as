@@ -1,5 +1,4 @@
-
-private function appdbexec(df, par):void
+﻿private function appdbexec(df, par):void
 {
 	appdbload(_dbpath + df + ".php", par);
 }

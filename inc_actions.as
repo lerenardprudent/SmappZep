@@ -1,4 +1,4 @@
-/*
+﻿/*
 var myfunc:String = "functionFromVariable";
 function functionFromVariable() : void
 {
@@ -335,10 +335,9 @@ private function obactstp(ob, obn, win):void
 	else if (win == _wins[27])
 	{
 		if (obn == "STP_672") {
-			var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
 			saveChecklistToTemp();
-			_checklistTempsCourant = tempStp.xval;
-			setChecklist(/*tempStp.xval*/);
+			_checklistTempsCourant = getobj(_wins[27], "STP", 672).xval;
+			setChecklist();
 		}
 	}
 }
@@ -1271,8 +1270,8 @@ private function obactbtn(ob, obn, win):void
 		case "BTN_709":			//user actions - interviewer reassignment
 			var intervA:String = trim((getobj(_wins[19], "INP", 700) as finp1).xval);
 			var intervB:String = trim((getobj(_wins[19], "INP", 705) as finp1).xval);
-			if (intervA.substr(0, 3) != "INT" || intervB.substr(0,3) != "INT") {
-				alert(_wins[0], "Veuillez choisir deux intervieweurs.", "");
+			if ((intervA.substr(0, 3) != "INT" && intervA.substr(0, 3) != "ADM" )|| (intervB.substr(0,3) != "INT" && intervB.substr(0, 3) != "ADM")) {
+				alert(_wins[0], "Il est obligatoire que les responsables sélectionnés soient des intervieweurs ou des administrateurs.", "");
 				return;
 			}
 			else if ( intervA == intervB ) {
@@ -1290,18 +1289,17 @@ private function obactbtn(ob, obn, win):void
 		case "BTN_690":			//user actions - batch activities export
 			var csv:Boolean = getobj(_wins[19], "RAD", 682).xval;
 			var html:Boolean = getobj(_wins[19], "RAD", 683).xval;
-			var tempStp:fstp1 = getobj(_wins[19], "STP", 684);
-			var temp:String = tempStp.xval;
+			var temps:String = getobj(_wins[19], "STP", 684).xval;
 			var coho:String = getobj(_wins[19], "STP", 685).xval;
 			var invalidInputMsg = "";
 			
 			if ( !csv && !html ) {
 				invalidInputMsg = "Veuillez sélectionner le type de sortie que vous souhaitez générer (CSV ou HTML).";
 			}
-			else if ( temp == '---' ) {
+			else if ( temps == '---' ) {
 				invalidInputMsg = "Veuillez entrer un temps.";
 			}
-			else if ( temp.match(/T-[0-9][0-9]/) == null ) {
+			else if ( temps.match(/T-[0-9][0-9]/) == null ) {
 				invalidInputMsg = "Veuillez entrer un temps valide.";
 			}
 			else if ( coho == '---' ) {
@@ -1656,6 +1654,8 @@ private function actionalert(... parms):void
 private function actionapplyto():void
 {
 	var v, lay, pv;
+	var act:String, usersCrit:String;
+	
 	if (_acttarget == "USRXP")		//export users
 	{
 		v = null;
@@ -1755,20 +1755,20 @@ private function actionapplyto():void
 	}
 	else if (_acttarget == "USRACTREAFFECT")
 	{
-		var act:String = "ACTREAFFECT";
+		act = "ACTREAFFECT";
 		var intervA:String = trim((getobj(_wins[19], "INP", 700) as finp1).xval);
 		var intervB:String = trim((getobj(_wins[19], "INP", 705) as finp1).xval);
 		var reaffectFiltered:Boolean = (getobj(_wins[25], "RAD", 663).xval == 1);		//filtered list
-		var usersCrit:String = ( reaffectFiltered ? _dbflt[0] /* Filter conditions as string */ : selrecsarray(_wins[9], "LST", 79) /* Selected users' ids */ );
+		usersCrit = ( reaffectFiltered ? _dbflt[0] /* Filter conditions as string */ : selrecsarray(_wins[9], "LST", 79) /* Selected users' ids */ );
 		if ( usersCrit != "" ) {
 			dbloadlist(act, _dbpage[1], _dbpagelen[1], usersCrit, _dbsort[1], _dbsortdir[1], _dbxfile[1], intervA, intervB, reaffectFiltered ? 1 : 0);
 		}
 	}
 	else if (_acttarget == "USRACTGEOLOC")
 	{
-		var act:String = "ACTGEOLOCATE";
+		act = "ACTGEOLOCATE";
 		var showFiltered:Boolean = (getobj(_wins[25], "RAD", 663).xval == 1);		//filtered list
-		var usersCrit:String = ( showFiltered ? _dbflt[0] /* Filter conditions as string */ : selrecsarray(_wins[9], "LST", 79) /* Selected users' ids */ );
+		usersCrit = ( showFiltered ? _dbflt[0] /* Filter conditions as string */ : selrecsarray(_wins[9], "LST", 79) /* Selected users' ids */ );
 		if ( usersCrit != "" ) {
 			dbloadlist(act, _dbpage[1], _dbpagelen[1], usersCrit, _dbsort[1], _dbsortdir[1], _dbxfile[1], showFiltered ? 1 : 0);
 		}
@@ -2457,6 +2457,7 @@ private function actdbposted(e:Event):void
 	try { _actloader.removeEventListener(IOErrorEvent.IO_ERROR, actdbioerror); } catch (er) { }
 	_actloader = null;
 	d = e.target.data;
+	browser_debug("DB request return val: " + d);
 	if (d.substr(0, 4) != "-er-")
 	{
 		if (d == "-ok-fn176-" || d == '-ok-fn178-' || d == "-ok-fn120-" || d == "-ok-fn121-") { alert(_wins[0], "Action effectuée.", ""); }

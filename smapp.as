@@ -10,6 +10,8 @@
 	import flash.filters.*;
 	//import fl.controls.*
 	import flash.net.*
+	import flash.external.ExternalInterface;
+	
 	//import flash.system.System;
 	import com.greensock.TweenMax;
 	import com.greensock.OverwriteManager;
@@ -60,7 +62,7 @@
 		private var _dbpath = "http://treksoft.com/saut/";
 		private var _apppath = "http://treksoft.com/zeps/";
 		*/
-		private var _dbpath = "http://localhost/SmappZep/";
+		private var _dbpath = "https://www.zepsom.org/";
 		private var _apppath = _dbpath;
 		
 		private var _appid:String = "ZEPSOM";
@@ -121,6 +123,7 @@
 		private var _dbxfile:Array = ["", "", "", "", ""];
 		private var _userLookupNumResults:uint = 0;
 		private var _checklistTempsCourant;
+		private var _onServer:Boolean = false;
 		
 		//------------------------------
 		
@@ -128,8 +131,15 @@
 		public function smapp():void
 		{
 			super();
-			check_if_test_mode();
+			//check_if_test_mode();
+			
 			if (stage) {
+				_onServer = ( stage.loaderInfo.url.indexOf("zepsom.org") >= 0 );
+				if ( _onServer ) {
+					_dbpath = ( _onServer ? "https://www.zepsom.org/" : "http://localhost/SmappZep/" );
+					_apppath = _dbpath;
+					browser_debug("Running on server: " + _dbpath + ", " + _apppath);
+				}
 				this.start();
 			}
 		}
@@ -263,7 +273,7 @@
 				if(_winprops[i][1] == "B"){makewin(i, _blocker);}else if(_winprops[i][1] == "M"){makewin(i, _main);}
 			}
 			for (i = 0; i < wlay.length; ++i) { makewinlayout(_wins[i], wlay[i]); _wins[i].visible = false; }			//load layout
-
+			
 			pozwin(_wins[0], true, true, 0, 0, false, 0);
 			pozwin(_wins[1], true, true, 0, 0, false, 0);
 			pozwin(_wins[2], true, true, 0, 0, false, 0);
@@ -303,6 +313,7 @@
 
 			// ADDED BY DMARG FOR TESTING PURPOSES ONLY !!!
 			if (_test_mode) {
+				ExternalInterface.call("console.log", "Mode test");
 				actiondb("-ok-fn100-4747¦Yan¦Kestens¦ADM¦SUP001¦0¦0");
 				tofront(_wins[9]);
 				showwin(_wins[9], true, 1, 0);
@@ -328,15 +339,21 @@
 		
 		private function urlLoader_complete(evt:Event):void
 		{
+			ExternalInterface.call("console.log", "Flag found");
 			trace("== Test mode ==");
 			_test_mode = true;
 		}
 		
 		private function urlLoader_error(evt:Event):void
 		{
-			
+			ExternalInterface.call("console.log", "Flag not found");
 		}
 		
-		
+		public function browser_debug(str:String):void
+		{
+			if ( _onServer ) {
+				ExternalInterface.call("console.log", str );
+			}
+		}
 	}
 }
