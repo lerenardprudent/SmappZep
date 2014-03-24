@@ -883,7 +883,7 @@ private function obactbtn(ob, obn, win):void
 				tempStp.xval = 'T-0' + tempCourantUsager.toString();
 				tempStp.xmax = tempCourantUsager;
 				
-				_lookuptg = [getobj(win, "INP", 180), getobj(_wins[27], "INP", 677)];
+				_lookuptg = [getobj(win, "INP", 180), getobj(_wins[27], "INP", 677)]; // 0th element holds value to be saved to DB, 1st element holds temporary value that is lost if Annuler is clicked
 				v = _lookuptg[0].xval;
 				var checklist:String = v;
 				if ( checklist.length > 0 && checklist.indexOf(":") == -1 ) { // Has checklist format been updated?
@@ -1312,10 +1312,16 @@ private function obactbtn(ob, obn, win):void
 			}
 			
 			if ( invalidInputMsg == "" ) {
-				pozwin(_wins[25], true, true, 0, 0, 1, 0);
-				showwin(_wins[25], true, 1, 0);
-				showblocker(true);
 				_acttarget = "USRXP";
+				var x:Array = getobj(_wins[19], "LST", 688).selrow;
+				if (x != null && x[0] == 6) {
+					actionapplyto(); // Since PHP code ignores filter or selected usr we may as well call the function immediately
+				}
+				else {
+					pozwin(_wins[25], true, true, 0, 0, 1, 0);
+					showwin(_wins[25], true, 1, 0);
+					showblocker(true);
+				}
 			}
 			else {
 				alert(_wins[0], invalidInputMsg, "");
@@ -1409,8 +1415,12 @@ private function obactbtn(ob, obn, win):void
 			break;
 		case "BTN_675":          //Sauvegarder les réglages
 			saveChecklistToTemp();
-			_lookuptg[0].xval = _lookuptg[1].xval.replace( new RegExp(/[^\]*|T-[0-9][0-9]:\{\}[\|]*[ ]*[\$]*/g ), "");
-			trace("Checklist filter cleaned up:", _lookuptg[0].xval);
+			if ( _lookuptg[1].name == "OBJ_INP_674" ) {  // We need to remove from the filter string empty substrings like "T-03:{}" which mess up the filtering done on the PHP side
+				//_lookuptg[1].xval = _lookuptg[1].xval.replace( new RegExp(/[^\]*|T-[0-9][0-9]:\{\}[\|]*[ ]*[\$]*/g ), "");
+				_lookuptg[1].xval = _lookuptg[1].xval.replace( new RegExp(/[\|]*T-[0-9][0-9]:\{\}|[\|]+$/g ), "");
+				trace("Checklist filter cleaned up:", "\"" + _lookuptg[1].xval + "\"" );
+			}
+			_lookuptg[0].xval = _lookuptg[1].xval;
 			
 		case "BTN_676":			//Fermer la fenêtre
 			showwin(_wins[27], false, 1, 0);
@@ -1650,15 +1660,24 @@ private function actionapplyto():void
 	{
 		v = null;
 		try { v = getobj(_wins[19], "LST", 688).selrow; } catch (er) { }
-		if (v == null) { lay = 1; } else { lay = v[0]; }
-		if (getobj(_wins[25], "RAD", 663).xval == 1)		//filtered list
+		var exportUsersHTML:Boolean = false;
+		if (v == null) {
+			lay = 1;
+		}
+		else {
+			lay = v[0]; 
+			if ( lay == 6 ) {
+				exportUsersHTML = true;
+			}
+		}
+		if (getobj(_wins[25], "RAD", 663).xval == 1 || exportUsersHTML)		//filtered list
 		{
 			if (getobj(_wins[19], "RAD", 682).xval == 1)		//csv
 			{
 				_dbxfile[0] = "usrlist.txt";
 				dbloadlist("USRXCL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], lay);
 			}
-			else if (getobj(_wins[19], "RAD", 683).xval == 1)		//html
+			else if (getobj(_wins[19], "RAD", 683).xval == 1 || exportUsersHTML )		//html
 			{
 				_dbxfile[0] = "usrlist.htm";
 				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay, getobj(_wins[19], "STP", 684).xval, getobj(_wins[19], "STP", 685).xval );
@@ -3173,7 +3192,9 @@ private function setChecklist():void
 		var cEnd:int = v.indexOf('}', cStart);
 		subChecklistStr = v.substring(cStart, cEnd);
 	}
-	trace("Got", v, "Setting for time", temps.xval, "based on", subChecklistStr);
+	if ( trim(subChecklistStr) != "" ) {
+		trace("Got", v, "Setting for time", temps.xval, "based on", subChecklistStr);
+	}
 	if (subChecklistStr.indexOf("RECH") != -1) { getobj(_wins[27], "CHK", 667).xval = 1; } else { getobj(_wins[27], "CHK", 667).xval = 0; }
 	if (subChecklistStr.indexOf("RAMQ") != -1) { getobj(_wins[27], "CHK", 668).xval = 1; } else { getobj(_wins[27], "CHK", 668).xval = 0; }
 	if (subChecklistStr.indexOf("AREC") != -1) { getobj(_wins[27], "CHK", 669).xval = 1; } else { getobj(_wins[27], "CHK", 669).xval = 0; }
@@ -3185,7 +3206,8 @@ private function correctChecklist(v:String, tempCourant:String):String
 {
 	trace("Got: ", v);
 	if (v.length > 0 ) {
-		v = tempCourant + ":{" + v + "}";
+		//v = tempCourant + ":{" + v + "}";
+		v = "T-03:{" + v + "}";
 	}
 	trace("Checklist corrected to: ", v);
 	return v;
@@ -3208,7 +3230,7 @@ private function saveChecklistToTemp():void
 		tempCompleteChecklistStr += ( tempCompleteChecklistStr != "" ? "|" : "" ) + _checklistTempsCourant + ":{" + v + "}";
 	}
 	else {
-		var re:RegExp = new RegExp(_checklistTempsCourant + ":\{[A-Z\~]*\}", "i");
+		var re:RegExp = new RegExp(_checklistTempsCourant + ":\{[A-Z\~\ ]*\}", "i");
 		tempCompleteChecklistStr = tempCompleteChecklistStr.replace(re, _checklistTempsCourant + ":{" + v + "}");
 	}
 	tempChecklistHolder.xval = tempCompleteChecklistStr;

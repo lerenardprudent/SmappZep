@@ -121,16 +121,16 @@ date_default_timezone_set('America/Montreal');
 		if ($flt[55] != "---")
 		{
 			$chklst = explode("|", $flt[55]);
-			$letters_or_spaces = "[a-z\ ]*";
+			$letters_or_spaces_or_tilda = "[a-z\ \~]*";
 			$anything = ".*";
 			$lc = count($chklst);
 			for ($j = 0; $j < $lc; $j++)
 			{
 				if ( trim($chklst[$j]) != "" ) {
 					//$chk = str_replace(" ", $letters_or_spaces, str_replace("}", $letters_or_spaces."\}", str_replace("{", "\{".$letters_or_spaces, trim($chklst[$j]))));
-					$chk = str_replace("~", $letters_or_spaces, 
-							str_replace("}", $letters_or_spaces."\}", 
-								str_replace("{", "\{".$letters_or_spaces, trim($chklst[$j])) ));
+					$chk = str_replace("~", $letters_or_spaces_or_tilda, 
+							str_replace("}", $letters_or_spaces_or_tilda."\}", 
+								str_replace("{", "\{".$letters_or_spaces_or_tilda, trim($chklst[$j])) ));
 					$chklst[$j] = "checklist regexp '".$anything.$chk.$anything. "'";
 				}
 			}
@@ -1344,7 +1344,7 @@ date_default_timezone_set('America/Montreal');
 		$itw = array();
 		while ($row = mysql_fetch_array($res))
 		{
-			array_push( $itw, array($row['idusr'], $row['fname'], $row['lname']) ); 
+			array_push( $itw, array($row['idusr'], $row['fname'], $row['lname']) );
 		}
 		
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
