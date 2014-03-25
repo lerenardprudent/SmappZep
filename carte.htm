@@ -10,6 +10,10 @@
     <style>
       body { padding: 0; margin: 0; }
       html, body, #map { height: 100%; width: 100%; }
+      .leaflet-popup-content *{margin:0; padding:0; position:auto; }
+      .leaflet-popup-content dt { display:block; float:left; width:60px; text-align: right; }
+      .leaflet-popup-content dt:after{content:" :"; padding: 5px;}
+      .leaflet-popup-content dd { margin-left: 5px; display:block; font-weight: 900; }
     </style>
     <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
   </head>
@@ -103,8 +107,26 @@
                 }});
             var greenIcon = new GreenIcon();
             var markerOptions = ( info.type == "PAR" ? {} : { icon: greenIcon } );
+            
+            var nomHTML = "";
+            var popupWidth = "120", popupHeight = "65";
+            if (info.hasOwnProperty('nom')) {
+              nomHTML = "<dt>Nom</dt><dd>" + info.nom + "</dd>";
+              popupWidth = "180";
+              popupHeight = "80";
+            }
+            
             var marker = L.marker([geocodedCoords.lat(), geocodedCoords.lng()], markerOptions );
-            marker.bindPopup("ID : <b>" + info.id + "</b><br>" + (info.hasOwnProperty('nom') ? "Nom : " + "<b>" + info.nom + "</b><br>" : "" ) + "Type : <b>" + info.type + "</b><br>Cohorte : <b>" + info.cohorte + "</b><br>Temps : <b>" + info.temps + "</b>");
+            
+            var popupHTML = "<div style=\"width: " + popupWidth + "px; height: " + popupHeight + "px;\"><dl>" +
+                            "<dt>ID</dt><dd>" + info.id + "</dd>" +
+                            nomHTML +
+                            "<dt>Type</dt><dd>" + info.type + "</dd>" +
+                            "<dt>Cohorte</dt><dd>" + info.cohorte + "</dd>" +
+                            "<dt>Temps</dt><dd>" + info.temps + "</dd>" +
+                            "</dl></div>";
+        
+            marker.bindPopup(popupHTML);
             marker.addTo(map);
           }
           else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {

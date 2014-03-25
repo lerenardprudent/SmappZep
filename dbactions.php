@@ -1724,7 +1724,7 @@ date_default_timezone_set('America/Montreal');
 						"       \"type\"    : \"".$row['type']."\",\n".
 						"       \"cohorte\" : \"".$row['xgroup']."\",\n".
 						"       \"temps\"   : \"".$row['phase']."\",\n".
-						"       \"nom\"     : \"".$row['fname']." ".$row['lname']."\",\n".
+						( strlen($row['fname'].$row['lname']) > 0 ? "       \"nom\"     : \"".$row['fname']." ".$row['lname']."\",\n" : "" ).
 						"       \"adresse\" : \"".$address."\"\n".
 						"      }";
 				$line .= ( $count < $num_usagers ? ",\n" : "\n" );
