@@ -317,7 +317,7 @@
 
 			// ADDED BY DMARG FOR TESTING PURPOSES ONLY !!!
 			if (_test_mode) {
-				ExternalInterface.call("console.log", "Mode test");
+				browser_debug("Mode test");
 				actiondb("-ok-fn100-4747¦Yan¦Kestens¦ADM¦SUP001¦0¦0");
 				tofront(_wins[9]);
 				showwin(_wins[9], true, 1, 0);
@@ -343,14 +343,14 @@
 		
 		private function urlLoader_complete(evt:Event):void
 		{
-			ExternalInterface.call("console.log", "Flag found");
+			browser_debug("Flag found");
 			trace("== Test mode ==");
 			_test_mode = true;
 		}
 		
 		private function urlLoader_error(evt:Event):void
 		{
-			ExternalInterface.call("console.log", "Flag not found");
+			browser_debug("Flag not found");
 		}
 		
 		public function browser_debug(str:String):void

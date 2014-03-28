@@ -32,15 +32,15 @@ function update_coh1_dates()
   global $userstbl;
   global $addrstbl;
   
-  $tmpTableName = 't1';
+  /*$tmpTableName = 't1';
 	$querySQL0 = "create temporary table ".$tmpTableName." as (select freshaddress.* from (select ".$addrstbl.".id as addrid, ma.idusr, ".$addrstbl.".address, ma.latestdate from ( select idusr, max(date) as latestdate from ".$addrstbl." group by idusr ) as ma join ".$addrstbl." on ma.idusr = ".$addrstbl.".idusr and ".$addrstbl.".date = ma.latestdate ) as freshaddress join ".$userstbl." on freshaddress.idusr = ".$userstbl.".idusr where ".$userstbl.".xgroup = 'C-01')";
 	$result0 = @mysql_query($querySQL0 );
 	if (!$result0) {
 		echo "Sorry";
 		return;
-	}
+	}*/
 			
-	$data = file_get_contents("adresses_zepsom_t01-t02-t03_lastvalidone.csv");
+	$data = file_get_contents("adresses_zepsom_t01-t02-t03.csv");
 	$updateDate = $currDate = get_date_time('D');
 	$lines = explode("\n", $data);
   $coh1count = 0;
@@ -48,9 +48,14 @@ function update_coh1_dates()
   $notfound = array();
   $num_users_updated = 0;
   $num_addrs_updated = 0;
-  //$maxlines = 1000;
-	for ($i = 1; $i < count($lines) and (isset($maxlines) ? $i <= $maxlines : true ); $i++) {
-		$line = $lines[$i];
+  //$maxlines = 20;
+  $prevLines = array();
+  $lastId = "";
+  $maxDate = "";
+  
+  echo count($lines)." lines<br>";
+	for ($i = 2; $i <= count($lines) and (isset($maxlines) ? $i <= $maxlines+1 : true ); $i++) {
+		$line = $lines[$i-1];
 		if (strlen($line) > 0) {
 			$tokens = explode(";", $line);
 			$idusr = trim($tokens[0]);
@@ -60,14 +65,35 @@ function update_coh1_dates()
         $row = mysql_fetch_array($result);
         if ( $row['xgroup'] == 'C-01' ) {
           $coh1count++;
-          $phase = trim($tokens[1]);
-          $addr = mysql_real_escape_string(trim($tokens[2]));
-          $ville = mysql_real_escape_string(trim($tokens[3]));
-          $codep = trim($tokens[4]);
+          //$phase = trim($tokens[1]);
+          //$addr = mysql_real_escape_string(trim($tokens[2]));
+          //$ville = mysql_real_escape_string(trim($tokens[3]));
+          //$codep = trim($tokens[4]);
           $date = trim($tokens[5]);
+          
+          if ( $idusr != $lastId ) {
+            if ( count($prevLines) > 0 ) {
+              process($lastId, $maxDate, $prevLines);
+              unset($prevLines);
+              $prevLines = array();
+            }
+            $lastId = $idusr;
+            $maxDate = "";
+          }
+          
+          array_push($prevLines, $tokens );
+          if ( $date > $maxDate ) {
+            $maxDate = $date;
+          }
+          
+          if ( $i == count($lines)-1 || (isset($maxlines) && $i == $maxlines+1 )) {
+            process($lastId, $maxDate, $prevLines);
+          }        
+          
           $querySQL1 = "select haddress, hcity, hpostal, hdate, dateedit from ".$userstbl." where idusr = '".$idusr."'";
           $result1 = @mysql_query($querySQL1 );
           $row = mysql_fetch_array($result1);
+          /*
           $updateUserSQL = "update ".$userstbl." set hdate = '".$date."', dateedit = '".$updateDate."'";
           $updateAddr = false;
           $updateCity = false;
@@ -118,6 +144,7 @@ function update_coh1_dates()
               echo "Problem updating addr ".$idusr."!<br>";
             }
           }
+          */
         }
         else if ( $row['xgroup'] == 'C-02' ) {
           $coh2count++;
@@ -127,17 +154,94 @@ function update_coh1_dates()
         }
 			}
       else {
-        array_push($notfound, $row['idusr']);
+        array_push($notfound, $idusr);
       }
 		}
 	}
   echo "C-01: ".$coh1count."<br>C-02: ".$coh2count."<br>Not found: ".implode(", ", $notfound)."<br>";
   echo "Users updated: ".$num_users_updated."<br>Addresses updated: ".$num_addrs_updated;
 }
-	
+
+function squote($str)
+{
+  return "'".$str."'";
+}
+
+function process($id, $mostRecentDate, $entries)
+{
+  global $userstbl;
+  global $addrstbl;
+  
+  $delAddrsSQL = "delete from ".$addrstbl." where idusr = '".$id."'";
+  $insAddrsSQL = "insert into ".$addrstbl." (idusr, postal, address, city, date, dateedit, zone1, zone2, zone3) values ";
+  $dateedit = squote(get_date_time('D'));
+  $emptyFlag = "===";
+  $blank = squote($emptyFlag);
+  $updateUserSQL = "update ".$userstbl." u left join pczone p on p.pc = ";
+  $updateAddrZonesSQL = "update ".$addrstbl." a left join pczone p on a.postal = p.pc set a.zone1 = p.zone1, a.zone2=p.zone2, a.zone3 = p.zone3 where a.zone1 = ".$blank;
+  $valuesStrs = array();
+  for ($x = 0; $x < count($entries); $x++ ) {
+    $idusr = squote(trim($entries[$x][0]));
+    $postal = squote(trim($entries[$x][4]));
+    $address = squote(trim(mysql_real_escape_string($entries[$x][2])));
+    $city = squote(trim(mysql_real_escape_string($entries[$x][3])));
+    $date = trim($entries[$x][5]);
+    
+    $values = array($idusr,
+                    $postal,
+                    $address,
+                    $city,
+                    squote($date),
+                    $dateedit,
+                    $blank,
+                    $blank,
+                    $blank);
+    array_push($valuesStrs, "(".implode(", ", $values).")");
+    if ( $date == $mostRecentDate ) {
+      $updateUserSQL .= $postal." set ".implode(", ", array("haddress=".$address, "hcity=".$city, "hpostal=".$postal, "hdate=".squote($date), "dateedit=".$dateedit, "u.hzone1=p.zone1", "u.hzone2=p.zone2", "u.hzone3=p.zone3" ) )." where idusr=".$idusr;
+    }
+  }
+  $insAddrsSQL .= implode(", ", $valuesStrs);
+  
+  $num_rows_aff = 0;
+  echo $delAddrsSQL."...";
+  $resultDel = @mysql_query($delAddrsSQL );
+  if ( $resultDel ) {
+    $num_rows_aff = mysql_affected_rows();
+    echo "Deleted ".$num_rows_aff." address(es)";
+  }
+  else die ("Merde" . mysql_error());
+  
+  echo "<br>".$insAddrsSQL."...";
+  $resultIns = @mysql_query($insAddrsSQL );
+  if ( $resultIns ) {
+    $num_rows_aff = mysql_affected_rows();
+    echo "Added ".$num_rows_aff." address(es)";
+  }
+  else die ("Merde" . mysql_error());
+  
+  echo "<br>".$updateUserSQL."...";
+  $resultUpd = @mysql_query($updateUserSQL );
+  if ( $resultUpd ) {
+    $num_rows_aff = mysql_affected_rows();
+    echo "Updated ".$num_rows_aff." user(s)";
+  }
+  else die ("Merde" . mysql_error());
+  
+  echo "<br>".$updateAddrZonesSQL."...";
+  $resultUpd = @mysql_query($updateAddrZonesSQL );
+  if ( $resultUpd ) {
+    $num_rows_aff = mysql_affected_rows();
+    echo "Updated ".$num_rows_aff." address zones";
+  }
+  else die ("Merde" . mysql_error());
+  
+  echo "<br>-------------------------------<br>";
+}
+
 	$debug_on = file_exists('.mode_test');
-	$userstbl = "users";
-  $addrstbl = "address";
+	$userstbl = "users_bk2";
+  $addrstbl = "addr_bk";
   
 	$retvar = "-er-post-";
 	$pvarx = "";
