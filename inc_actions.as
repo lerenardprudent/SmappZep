@@ -1296,17 +1296,21 @@ private function obactbtn(ob, obn, win):void
 			if ( !csv && !html ) {
 				invalidInputMsg = "Veuillez sélectionner le type de sortie que vous souhaitez générer (CSV ou HTML).";
 			}
-			else if ( temps == '---' ) {
-				invalidInputMsg = "Veuillez entrer un temps.";
-			}
-			else if ( temps.match(/T-[0-9][0-9]/) == null ) {
-				invalidInputMsg = "Veuillez entrer un temps valide.";
-			}
-			else if ( coho == '---' ) {
-				invalidInputMsg = "Veuillez entrer une cohorte.";
-			}
-			else if ( coho.match(/C-[0-9][0-9]/) == null ) {
-				invalidInputMsg = "Veuillez entrer une cohorte valide.";
+			
+			var x:Array = getobj(_wins[19], "LST", 688).selrow;
+			if (x != null && x[0] == 6) {
+				if ( temps == '---' ) {
+					invalidInputMsg = "Veuillez saisir une valeur dans le champs « Temps ».";
+				}
+				else if ( temps.match(/T-[0-9][0-9]/) == null ) {
+					invalidInputMsg = "Veuillez saisir une valeur valide dans le champs « Temps ».";
+				}
+				else if ( coho == '---' ) {
+					invalidInputMsg = "Veuillez saisir une valeur dans le champs « Cohorte ».";
+				}
+				else if ( coho.match(/C-[0-9][0-9]/) == null ) {
+					invalidInputMsg = "Veuillez entrer une saisir une valeur dans le champs « Cohorte ».";
+				}
 			}
 			
 			if ( invalidInputMsg == "" ) {
@@ -1680,7 +1684,7 @@ private function actionapplyto():void
 			else if (getobj(_wins[19], "RAD", 683).xval == 1 || exportUsersHTML )		//html
 			{
 				_dbxfile[0] = "usrlist.htm";
-				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay, getobj(_wins[19], "STP", 684).xval, getobj(_wins[19], "STP", 685).xval );
+				dbloadlist("USRXHL", _dbpage[0], _dbpagelen[0], _dbflt[0], (lay == 3 ? "cust2" : _dbsort[0] ), (lay == 3 ? "" : _dbsortdir[0] ), _dbxfile[0], getobj(_wins[19], "INP", 686).xval, lay, getobj(_wins[19], "STP", 684).xval, getobj(_wins[19], "STP", 685).xval );
 			}
 		}
 		else if (getobj(_wins[25], "RAD", 664).xval == 1)		//selected items

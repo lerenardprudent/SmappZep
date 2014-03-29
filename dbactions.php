@@ -164,7 +164,7 @@ date_default_timezone_set('America/Montreal');
 			$qfind = "";
 		}
 		
-		$var = array("type='PAR'", "type='POT'", "type='REC'", "type='INT'", "type='PRE'", "type='SUP'", "type='ADM'", "type='AUT'", "phase='".$flt[8]."'", "xgroup='".$flt[9]."'", "step='INI'", "step='REC'", "step='AUT'", "step='INT'", "step='AUT'", "step='ACQ'", "step='AUT'", "step='FIN'", "status='ACT'", "status='COM'", "status='ARE'", "status='NRE'", "status='NIW'", "status='ABA'", "status='DEC'", "status='DHZ'", "status='DAI'", "status='ANN'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "sex='H'", "sex='F'", "birth >= '".$flt[36]."'", "birth <= '".$flt[37]."'", "matrim='CEL'", "matrim='CDF'", "matrim='MAR'", "matrim='SEP'", "matrim='DIV'", "matrim='VEU'", "revcode = '".$flt[44]."'", "rev = '".$flt[45]."'", "educ='1'", "educ='2'", "educ='3'", "educ='4'", "educ='5'", "educ='6'", "hzone1='".$flt[52]."'", "hzone2='".$flt[53]."'", "hzone3='".$flt[54]."'", $chklst, $flt[56], $flt[57], $flt[58], $flt[59], $flt[60], $flt[61], $qfind, "(cust1 >= '".$flt[63]."' or cust2 >= '".$flt[63]."')", "(cust1 <= '".$flt[64]."' or cust2 <= '".$flt[64]."')");
+		$var = array("type='PAR'", "type='POT'", "type='REC'", "type='INT'", "type='PRE'", "type='SUP'", "type='ADM'", "type='AUT'", "phase='".$flt[8]."'", "xgroup='".$flt[9]."'", "step='INI'", "step='REC'", "step='AUT'", "step='INT'", "step='AUT'", "step='ACQ'", "step='AUT'", "step='FIN'", "status='ACT'", "status='COM'", "status='ARE'", "status='NRE'", "status='NIW'", "status='ABA'", "status='DEC'", "status='DHZ'", "status='DAI'", "status='ANN'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "sex='H'", "sex='F'", "birth >= '".$flt[36]."'", "birth <= '".$flt[37]."'", "matrim='CEL'", "matrim='CDF'", "matrim='MAR'", "matrim='SEP'", "matrim='DIV'", "matrim='VEU'", "revcode = '".$flt[44]."'", "rev = '".$flt[45]."'", "educ='1'", "educ='2'", "educ='3'", "educ='4'", "educ='5'", "educ='6'", "hzone1='".$flt[52]."'", "hzone2='".$flt[53]."'", "hzone3='".$flt[54]."'", $chklst, $flt[56], $flt[57], $flt[58], $flt[59], $flt[60], $flt[61], $qfind, "(cust1 >= '".$flt[63]."' or cust2 >= '".$flt[63]."')", "(cust1 <= '".$flt[64]."' or cust2 <= '".$flt[64]."')", "(cust1 >= '".$flt[63]."' and cust1 <= '".$flt[64]."') or (cust2 >= '".$flt[63]."' and cust2 <= '".$flt[64]."')");
 		$exp = NULL;
 		for ($i = 0; $i <= 7; $i += 1)		//type
 		{
@@ -259,9 +259,15 @@ date_default_timezone_set('America/Montreal');
 			if ($flt[$i] != "---" && $flt[$i] != "") { $wr[] = $var[$i]; }
 		}
 		$exp = NULL;
+		$upper_and_lower_bounds_defined = true;
 		for ($i = 63; $i <= 64; $i += 1)		//interview
 		{
 			if ($flt[$i] != "---") { $exp[] = $var[$i]; }
+			else { $upper_and_lower_bounds_defined = false; }
+		}
+		if ( $upper_and_lower_bounds_defined ) {
+			$exp = NULL;
+			$exp[] = $var[$i];
 		}
 		if (count($exp) > 0) { $wr[] = "(" . implode(" and ", $exp) . ")"; }
 		$exp = NULL;

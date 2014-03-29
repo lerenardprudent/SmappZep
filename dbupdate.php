@@ -73,7 +73,7 @@ function update_coh1_dates()
           
           if ( $idusr != $lastId ) {
             if ( count($prevLines) > 0 ) {
-              process($lastId, $maxDate, $prevLines);
+              process($i-1, $lastId, $maxDate, $prevLines);
               unset($prevLines);
               $prevLines = array();
             }
@@ -87,7 +87,7 @@ function update_coh1_dates()
           }
           
           if ( $i == count($lines)-1 || (isset($maxlines) && $i == $maxlines+1 )) {
-            process($lastId, $maxDate, $prevLines);
+            process($i, $lastId, $maxDate, $prevLines);
           }        
           
           $querySQL1 = "select haddress, hcity, hpostal, hdate, dateedit from ".$userstbl." where idusr = '".$idusr."'";
@@ -167,13 +167,22 @@ function squote($str)
   return "'".$str."'";
 }
 
-function process($id, $mostRecentDate, $entries)
+function process($line_no, $id, $mostRecentDate, $entries)
 {
   global $userstbl;
   global $addrstbl;
   
+  $getUserIdSQL = "select id from ".$userstbl." where idusr = ".squote($id);
+  $resultIdu = @mysql_query( $getUserIdSQL );
+  $idu = '';
+  if ( $resultIdu && mysql_num_rows($resultIdu) == 1 ) {
+    $row = mysql_fetch_array($resultIdu);
+    $idu = squote($row['id']);
+  }
+  else die ("Merde" . mysql_error());
+  
   $delAddrsSQL = "delete from ".$addrstbl." where idusr = '".$id."'";
-  $insAddrsSQL = "insert into ".$addrstbl." (idusr, postal, address, city, date, dateedit, zone1, zone2, zone3) values ";
+  $insAddrsSQL = "insert into ".$addrstbl." (idusr, idu, postal, address, city, date, dateedit, zone1, zone2, zone3) values ";
   $dateedit = squote(get_date_time('D'));
   $emptyFlag = "===";
   $blank = squote($emptyFlag);
@@ -188,6 +197,7 @@ function process($id, $mostRecentDate, $entries)
     $date = trim($entries[$x][5]);
     
     $values = array($idusr,
+                    $idu,
                     $postal,
                     $address,
                     $city,
@@ -204,7 +214,16 @@ function process($id, $mostRecentDate, $entries)
   $insAddrsSQL .= implode(", ", $valuesStrs);
   
   $num_rows_aff = 0;
-  echo $delAddrsSQL."...";
+  
+  echo $line_no.": ".$updateUserSQL."...";
+  $resultUpd = @mysql_query($updateUserSQL );
+  if ( $resultUpd ) {
+    $num_rows_aff = mysql_affected_rows();
+    echo "Updated ".$num_rows_aff." user(s)";
+  }
+  else die ("Merde" . mysql_error());
+  
+  echo "<br>".$delAddrsSQL."...";
   $resultDel = @mysql_query($delAddrsSQL );
   if ( $resultDel ) {
     $num_rows_aff = mysql_affected_rows();
@@ -220,14 +239,6 @@ function process($id, $mostRecentDate, $entries)
   }
   else die ("Merde" . mysql_error());
   
-  echo "<br>".$updateUserSQL."...";
-  $resultUpd = @mysql_query($updateUserSQL );
-  if ( $resultUpd ) {
-    $num_rows_aff = mysql_affected_rows();
-    echo "Updated ".$num_rows_aff." user(s)";
-  }
-  else die ("Merde" . mysql_error());
-  
   echo "<br>".$updateAddrZonesSQL."...";
   $resultUpd = @mysql_query($updateAddrZonesSQL );
   if ( $resultUpd ) {
@@ -240,15 +251,14 @@ function process($id, $mostRecentDate, $entries)
 }
 
 	$debug_on = file_exists('.mode_test');
-	$userstbl = "users_bk2";
-  $addrstbl = "addr_bk";
+	$userstbl = "users";
+  $addrstbl = "address";
   
 	$retvar = "-er-post-";
 	$pvarx = "";
 	if(isset($_POST['pvar'])){$pvarx = $_POST['pvar'];}elseif(isset($_GET['pvar'])){$pvarx = $_GET['pvar'];}
 	if($pvarx != "")
 	{
-		
 		$database = "zepsom_zeps";
 		$username="root";
 		$password = "tr3ks0ft";
