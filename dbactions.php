@@ -1207,6 +1207,7 @@ date_default_timezone_set('America/Montreal');
 		$strdata = "<html><head><title>Liste usagers</title><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><style>@media all{.page-break { display:none; }} @media print{ .page-break { display:block; page-break-before:always; }} table{ width:100%; border-style:none; border-width:0px; border-color:#ff0000; font-family:arial,sans-serif; font-size:12px; color:#606060; border-spacing:0px; border-collapse:collapse; }  td{ height:16px; border-style:solid; border-width:0px 0px 1px 0px; border-color:#ff0000; padding:1px 8px 1px 8px; } .title{ font-weight:bold; padding:0px 0px 4px 6px; margin:0px}</style></head> <body style='margin:8px; font-family:arial,sans-serif; font-size:16px; color:#606060;'> <div class='title'>" .$ti. "</div>";
 		fwrite($fh, $strdata);
 		$i = 0;
+		debug( "fn160()", false);
 		while ($row = mysql_fetch_array($res))
 		{
 			if ($i == 0)
@@ -1214,6 +1215,7 @@ date_default_timezone_set('America/Montreal');
 				$strdata = "<br/><br/><table>";
 				fwrite($fh, $strdata);
 			}
+			debug( $row['checklist'] );
 			$strdata = "<tr><td colspan='9' style='border-style:none;'><span style='color:#ff0000'>&nbsp;<br/>Participant&nbsp;:&nbsp;<b>" .$row['fname']. "&nbsp;" .$row['lname']. "</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date&nbsp;prévue&nbsp;: <b>" .$row['cust2']. "</b></span></td></tr>";
 			fwrite($fh, $strdata);
 			$strdata = "<tr><td>" .$row['xgroup']. "</td><td>" .$row['idusr']. "</td><td>" .$row['type']. "</td><td>" .$row['phase']. "</td><td>" .$row['step']. "</td><td>" .$row['status']. "</td><td>" .$row['hzone1']. "</td><td>" .$row['hzone2']. "</td><td>" .$row['hzone3']. "</td></tr>";
@@ -1230,13 +1232,30 @@ date_default_timezone_set('America/Montreal');
 			fwrite($fh, $strdata);
 			$strdata = "<tr><td colspan='5'>" .$row['comments']. "</td><td colspan='4'>Commentaires : <br/>&nbsp;<br/>&nbsp;</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='9'>Documents signés :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>RECH</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>RAMQ</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>AREC</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SDIAG</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>AUT</b> :</td></tr>";
+			$docs = array("RECH", "RAMQ", "AREC", "SDIAG", "AUT" );
+			$clist = $row['checklist'];
+			$items = explode( "|", $clist);
+			$signe = "" ;
+			foreach ($docs as $doc) {
+				$temps = array();
+				foreach( $items as $item) {
+					if ( strpos($item, $doc) > 0) {
+						array_push($temps, substr($item, 0, 4));
+					}
+				}
+				if ( count($temps) > 0) {
+					sort($temps);
+					$signe .= "<b>".$doc."</b> : ".implode(" / ", $temps)."&nbsp;&nbsp;&nbsp;";
+				}
+			}
+			
+			$strdata = "<tr><td colspan='9'>Documents signés : ".$signe."</td></tr>";
 			fwrite($fh, $strdata);
 			$strdata = "<tr><td colspan='9'>Diagnostique :&nbsp;</td></tr>";
 			fwrite($fh, $strdata);
 			$strdata = "<tr><td colspan='3'>Date interview :&nbsp;&nbsp;&nbsp;</td><td colspan='4'>Place :&nbsp;</td><td>Km :&nbsp;</td><td>Hrs :&nbsp;</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='9'>Statut :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COM</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ABA</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ARE</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DEC</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DHZ</b></td></tr>";
+			$strdata = "<tr><td colspan='9'>Statut :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$row['status']."</b></td></tr>";
 			fwrite($fh, $strdata);
 			
 			

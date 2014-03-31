@@ -1419,7 +1419,8 @@ private function obactbtn(ob, obn, win):void
 			saveChecklistToTemp();
 			if ( _lookuptg[1].name == "OBJ_INP_674" ) {  // We need to remove from the filter string empty substrings like "T-03:{}" which mess up the filtering done on the PHP side
 				//_lookuptg[1].xval = _lookuptg[1].xval.replace( new RegExp(/[^\]*|T-[0-9][0-9]:\{\}[\|]*[ ]*[\$]*/g ), "");
-				_lookuptg[1].xval = _lookuptg[1].xval.replace( new RegExp(/[\|]*T-[0-9][0-9]:\{\}|[\|]+$/g ), "");
+				_lookuptg[1].xval = _lookuptg[1].xval.replace( new RegExp(/[\|]*T-[0-9][0-9]:\{\}/g ), "");
+				_lookuptg[1].xval = _lookuptg[1].xval.replace( new RegExp(/^\|/g ), "");
 				trace("Checklist filter cleaned up:", "\"" + _lookuptg[1].xval + "\"" );
 			}
 			_lookuptg[0].xval = _lookuptg[1].xval;
@@ -3232,7 +3233,7 @@ private function saveChecklistToTemp():void
 	trace("Saving", v, "at time", _checklistTempsCourant, "Checklist before: ", tempCompleteChecklistStr);
 	var idx:int = tempCompleteChecklistStr.indexOf(_checklistTempsCourant);
 	if ( idx < 0 ) {
-		tempCompleteChecklistStr += ( tempCompleteChecklistStr != "" ? "|" : "" ) + _checklistTempsCourant + ":{" + v + "}";
+		tempCompleteChecklistStr += "|" + _checklistTempsCourant + ":{" + v + "}";
 	}
 	else {
 		var re:RegExp = new RegExp(_checklistTempsCourant + ":\{[A-Z\~\ ]*\}", "i");

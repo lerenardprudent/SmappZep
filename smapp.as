@@ -131,7 +131,7 @@
 		public function smapp():void
 		{
 			super();
-			//check_if_test_mode();
+			check_if_test_mode();
 			
 			if (stage) {
 				this.start();
