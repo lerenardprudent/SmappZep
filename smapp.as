@@ -102,7 +102,7 @@
 		private var _varsarr:*;					//variables IDs and names
 		private var _answsarr:*;				//object id, type, page, value, variable, x (if dragged), y (if dragged)
 		private var _curuser:*;					//current admin (other than parti)
-		private var _curphase:String = "T-03";	//current phase
+		private var _curphase:String = "T-04";	//current phase
 		//private var _curparti:*;				//parti id from parti windows
 		private var _queparti:*;				//parti id for questionnaire
 		private var _curquest:String = "";		//id of the questionnaire

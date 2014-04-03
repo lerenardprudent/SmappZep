@@ -27,6 +27,29 @@ function get_date_time( $date_or_time )
 	return $timeStr;
 }
 
+function update_docs_signes()
+{
+  global $userstbl;
+  
+  $querySQL = "select id, idusr, checklist from ".$userstbl." where checklist != \"\"";
+	$result = @mysql_query($querySQL );
+  $count = 0;
+	while ($row = mysql_fetch_array($result)) {
+    $idusr = $row['idusr'];
+    $check = $row['checklist'];
+    if ( strpos($check, '{') === false ) {
+      $newcheck = 'T-03:{'.preg_replace('/[\ ]+/','~', $check).'}';
+      $updocsSQL = "update ".$userstbl." set checklist=".squote($newcheck)." where idusr=".squote($idusr);
+      echo $updocsSQL."<br>";
+      $resultUpdateDocs = @mysql_query($updocsSQL);
+      if ( $resultUpdateDocs ) {
+        $count += mysql_affected_rows();
+      }
+    }
+  }
+  echo $count." updates done on docs signed<br>";
+}
+
 function update_coh1_dates()
 {
   global $userstbl;
@@ -281,6 +304,10 @@ function process($line_no, $id, $mostRecentDate, $entries)
     if ($pvarx[0] == "up_c1_dates")
 		{
       update_coh1_dates();
+		}
+    else if ($pvarx[0] == "up_docs")
+		{
+      update_docs_signes();
 		}
     else {
       echo "Rien n'a été fait<br>";

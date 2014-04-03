@@ -1944,12 +1944,12 @@ private function setwinperms(win):void
 		if (_curuser[3] == "REC")
 		{
 			lstv = [1, 1, 0, 0, 0, 0, 1, 0, 0];
-			_dbflt[0] = "1·0·0·0·0·0·0·0·---·---·1·1·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·---·---·0·0·---·" + _curuser[4] + "·---·---·---·---·---";		//parti asigned to logged recruiter
+			_dbflt[0] = "1·0·0·0·0·0·0·0·" + _curphase + "·---·1·1·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·---·---·0·0·---·" + _curuser[4] + "·---·---·---·---·---";		//parti asigned to logged recruiter
 		}
 		else if (_curuser[3] == "INT")
 		{
 			lstv = [1, 1, 0, 0, 0, 0, 1, 0, 0];
-			_dbflt[0] = "0·0·0·0·0·0·0·0·---·---·0·0·0·1·0·0·0·1·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·---·---·1·0·---·" + _curuser[4] + "·---·---·---·---·---";			//parti asigned to logged interviewer
+			_dbflt[0] = "0·0·0·0·0·0·0·0·" + _curphase + "·---·0·0·0·1·0·0·0·1·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·0·0·0·0·0·0·---·---·---·---·1·0·---·" + _curuser[4] + "·---·---·---·---·---";			//parti asigned to logged interviewer
 		}
 		else if (_curuser[3] == "PRE")
 		{
@@ -2037,6 +2037,9 @@ private function setfldsperms(win:*):void
 			{
 				fl = [["INP", 95], ["INP", 96], ["INP", 109], ["INP", 110], ["INP", 184], ["INP", 185]];
 			}
+		}
+		else if (v == "INT" && _curuser[3] == "ADM") {
+			fl = [["INP", 95], ["INP", 96], ["INP", 109], ["INP", 110], ["INP", 184], ["INP", 185]];
 		}
 		else
 		{
@@ -2510,6 +2513,11 @@ private function actiondb(d:String):void
 	{
 		d = d.substr(10);
 		_curuser = d.split("¦");
+		if ( _curuser[3] == "INT" && _curuser[_curuser.length - 1] != "" ) {
+			var tempsCourant:String = _curuser[_curuser.length - 1];
+			trace("Setting interviewer current phase to ", tempsCourant );
+			_curphase = tempsCourant;
+		}
 		showwin(_wins[6], false, 1, 0);
 		showblocker(false);
 		//_logged = true;

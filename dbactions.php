@@ -25,7 +25,7 @@ date_default_timezone_set('America/Montreal');
 		$retv = "-er-sql-";
 		$whr = "";
 		
-		$querySQL = "select id, fname, lname, alias, type, idusr, cust6, cust7 from " .$userstbl. " where alias='" .$par[1]. "' and pword='" .$par[2]. "'";
+		$querySQL = "select id, fname, lname, alias, type, phase, idusr, cust6, cust7 from " .$userstbl. " where alias='" .$par[1]. "' and pword='" .$par[2]. "'";
 		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if($result)
 		{
@@ -33,7 +33,7 @@ date_default_timezone_set('America/Montreal');
 			{
 				while ($row = mysql_fetch_array($result))
 				{
-					$retv = "-ok-fn100-" .$row['id']. "¦" .$row['fname']. "¦" .$row['lname']. "¦" .$row['type']. "¦" .$row['idusr']. "¦" .$row['cust6']. "¦" .$row['cust7'];
+					$retv = "-ok-fn100-" .$row['id']. "¦" .$row['fname']. "¦" .$row['lname']. "¦" .$row['type']. "¦" .$row['idusr']. "¦" .$row['cust6']. "¦" .$row['cust7']. "¦" .$row['phase'];
 				}
 			}
 			else
@@ -1251,13 +1251,18 @@ date_default_timezone_set('America/Montreal');
 			
 			$strdata = "<tr><td colspan='9'>Documents signés : ".$signe."</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='9'>Diagnostique :&nbsp;</td></tr>";
+			$strdata = "<tr><td colspan='3'>Date interview :&nbsp;&nbsp;&nbsp;</td><td colspan='4'>Place :&nbsp;<b>".$row['cust4']."</b></td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='3'>Date interview :&nbsp;&nbsp;&nbsp;</td><td colspan='4'>Place :&nbsp;</td><td>Km :&nbsp;</td><td>Hrs :&nbsp;</td></tr>";
+			$res_lookup = fn111(array('fn111' , $row['id']));
+			$resp_at_temps = explode("|", $res_lookup);
+			$resp_str = "";
+			debug("fn111", false);
+			for ( $j = 1; $j < count($resp_at_temps); $j++) {
+				$bits = explode("¦", $resp_at_temps[$j]);
+				$resp_str .= "<br/><b>".$bits[0]."</b>&nbsp;&nbsp;(".$bits[2].")";
+			}
+			$strdata = "<tr><td colspan='9'>Responsable(s) :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$resp_str."</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='9'>Statut :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>".$row['status']."</b></td></tr>";
-			fwrite($fh, $strdata);
-			
 			
 			$i = $i + 1;
 			if ($i == 3)
