@@ -805,7 +805,7 @@ date_default_timezone_set('America/Montreal');
 		$whr = "";
 		$td = mktime(0,0,0,date('m'),date('d'),date('Y'));
 		$pus = explode("|", $par[1]);
-		$ppa = explode("|", $par[2]);
+		$ppa = explode("*", $par[2]);
 		$paa = explode("|", $par[3]);
 		$id = $ppa[1];
 		$z1 = $ppa[38];
@@ -1207,7 +1207,7 @@ date_default_timezone_set('America/Montreal');
 		$strdata = "<html><head><title>Liste usagers</title><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><style>@media all{.page-break { display:none; }} @media print{ .page-break { display:block; page-break-before:always; }} table{ width:100%; border-style:none; border-width:0px; border-color:#ff0000; font-family:arial,sans-serif; font-size:12px; color:#606060; border-spacing:0px; border-collapse:collapse; }  td{ height:16px; border-style:solid; border-width:0px 0px 1px 0px; border-color:#ff0000; padding:1px 8px 1px 8px; } .title{ font-weight:bold; padding:0px 0px 4px 6px; margin:0px}</style></head> <body style='margin:8px; font-family:arial,sans-serif; font-size:16px; color:#606060;'> <div class='title'>" .$ti. "</div>";
 		fwrite($fh, $strdata);
 		$i = 0;
-		debug( "fn160()", false);
+		debug( "htmusr3()", false);
 		while ($row = mysql_fetch_array($res))
 		{
 			if ($i == 0)
@@ -1218,11 +1218,21 @@ date_default_timezone_set('America/Montreal');
 			debug( $row['checklist'] );
 			$strdata = "<tr><td colspan='9' style='border-style:none;'><span style='color:#ff0000'>&nbsp;<br/>Participant&nbsp;:&nbsp;<b>" .$row['fname']. "&nbsp;" .$row['lname']. "</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date&nbsp;prévue&nbsp;: <b>" .$row['cust2']. "</b></span></td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td>" .$row['xgroup']. "</td><td>" .$row['idusr']. "</td><td>" .$row['type']. "</td><td>" .$row['phase']. "</td><td>" .$row['step']. "</td><td>" .$row['status']. "</td><td>" .$row['hzone1']. "</td><td>" .$row['hzone2']. "</td><td>" .$row['hzone3']. "</td></tr>";
+			$strdata = "<tr><td><b>" .$row['xgroup']. "</b></td><td><b>" .$row['idusr']. "</b></td><td><b>" .$row['type']. "</b></td><td><b>" .$row['phase']. "</b></td><td><b>" .$row['step']. "</b></td><td><b>" .$row['status']. "</b></td><td><b>" .$row['hzone1']. "</b></td><td><b>" .$row['hzone2']. "</b></td><td><b>" .$row['hzone3']. "</b></td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='9'>" .$row['haddress']. " " .$row['haddressx']. ", " .$row['hcity']. ", " .$row['hstate']. ", " .$row['hpostal']. "</td></tr>";
+			$strdata = "<tr><td colspan='9'>Adresse&nbsp;:&nbsp;".$row['haddress']. " " .$row['haddressx']. ", " .$row['hcity']. ", " .$row['hstate']. ", " .$row['hpostal']. "</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='3'>" .$row['hphone']. "&nbsp;</td><td colspan='3'>" .$row['cphone']. "&nbsp;<td colspan='3'>" .$row['hemail']. "&nbsp;</td></tr>";
+			$strdata = "<tr><td colspan='9'>Coords&nbsp;&nbsp;:&nbsp;".$row['hphone']. "&nbsp;&nbsp;&nbsp;" .$row['cphone']. "&nbsp;&nbsp;&nbsp;" .$row['hemail']. "&nbsp;</td></tr>";
+			fwrite($fh, $strdata);
+			$strdata = "<tr><td colspan='9'>Langue&nbsp;&nbsp;:&nbsp;";
+			$lang = "";
+			if ( $row['lang'] == "FR" ) {
+				$lang = "Français";
+			}
+			else if ( $row['lang'] == "EN" ) {
+				$lang = "Anglais";
+			}
+			$strdata .= $lang. "&nbsp;</td></tr>";
 			fwrite($fh, $strdata);
 			$strdata = "<tr><td colspan='9'>Contact 1 : " .$row['xcontact1']. "</td></tr>";
 			fwrite($fh, $strdata);
@@ -1230,7 +1240,7 @@ date_default_timezone_set('America/Montreal');
 			fwrite($fh, $strdata);
 			$strdata = "<tr><td colspan='9'>Contact 3 : " .$row['xcontact3']. "</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='5'>" .$row['comments']. "</td><td colspan='4'>Commentaires : <br/>&nbsp;<br/>&nbsp;</td></tr>";
+			$strdata = "<tr><td colspan='9'>Commentaires : <span style=\"font-style: italic\">".$row['comments']."</span></td></tr>";
 			fwrite($fh, $strdata);
 			$docs = array("RECH", "RAMQ", "AREC", "SDIAG", "AUT" );
 			$clist = $row['checklist'];
@@ -1251,17 +1261,21 @@ date_default_timezone_set('America/Montreal');
 			
 			$strdata = "<tr><td colspan='9'>Documents signés : ".$signe."</td></tr>";
 			fwrite($fh, $strdata);
-			$strdata = "<tr><td colspan='3'>Date interview :&nbsp;&nbsp;&nbsp;</td><td colspan='4'>Place :&nbsp;<b>".$row['cust4']."</b></td></tr>";
+			$strdata = "<tr><td colspan='5'>Date interview :&nbsp;&nbsp;&nbsp;</td><td colspan='4'>Place :&nbsp;<b>".$row['cust4']."</b></td></tr>";
 			fwrite($fh, $strdata);
 			$res_lookup = fn111(array('fn111' , $row['id']));
 			$resp_at_temps = explode("|", $res_lookup);
 			$resp_str = "";
 			debug("fn111", false);
+			$num_resps_added = 0;
 			for ( $j = 1; $j < count($resp_at_temps); $j++) {
 				$bits = explode("¦", $resp_at_temps[$j]);
-				$resp_str .= "<br/><b>".$bits[0]."</b>&nbsp;&nbsp;(".$bits[2].")";
+				if ( substr($bits[1], 0, 3) == "INT" && $num_resps_added < 3 ) {
+					$resp_str .= "<br/><b>".$bits[0]."</b>&nbsp;&nbsp;(".$bits[2].")";
+					$num_resps_added++;
+				}
 			}
-			$strdata = "<tr><td colspan='9'>Responsable(s) :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$resp_str."</td></tr>";
+			$strdata = "<tr><td colspan='9'>Responsable(s) :".$resp_str."</tr>";
 			fwrite($fh, $strdata);
 			
 			$i = $i + 1;

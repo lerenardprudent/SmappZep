@@ -1363,12 +1363,32 @@ private function obactbtn(ob, obn, win):void
 			dbloadlookup("USRADDR", v);
 			break;
 		case "BTN_643":			//signed documents lookup
-			_lookuptg = [getobj(win, "INP", 642)];
+			var tempUsagerRestr:finp1 = getobj(_wins[26], "INP", 610);
+			var tempVal:int = 0;
+			if ( tempUsagerRestr.xval.match(/T-[0-9][0-9]/) != null ) {
+				tempVal = parseInt(tempUsagerRestr.xval.substr(2));
+			}
+			trace("Here", tempVal);
+			
+			var tempStp:fstp1 = getobj(_wins[27], "STP", 672);
+			if (tempVal > 0) {
+				tempStp.xval = 'T-0' + tempVal.toString();
+				tempStp.xmax = tempVal;
+			}
+			else {
+				tempStp.xval = 'T-01';
+			}
+				
+			_lookuptg = [getobj(win, "INP", 642), getobj(_wins[27], "INP", 677)]; // 0th element holds value to be saved to DB, 1st element holds temporary value that is lost if Annuler is clicked
 			v = _lookuptg[0].xval;
-			if (v.indexOf("RECH") != -1) { getobj(_wins[27], "CHK", 667).xval = 1; } else { getobj(_wins[27], "CHK", 667).xval = 0; }
-			if (v.indexOf("RAMQ") != -1) { getobj(_wins[27], "CHK", 668).xval = 1; } else { getobj(_wins[27], "CHK", 668).xval = 0; }
-			if (v.indexOf("AREC") != -1) { getobj(_wins[27], "CHK", 669).xval = 1; } else { getobj(_wins[27], "CHK", 669).xval = 0; }
-			if (v.indexOf("SDIAG") != -1) { getobj(_wins[27], "CHK", 670).xval = 1; } else { getobj(_wins[27], "CHK", 670).xval = 0; }
+			var checklist:String = v;
+			if ( checklist.length > 0 && checklist.indexOf(":") == -1 ) { // Has checklist format been updated?
+				checklist = correctChecklist(checklist, tempUsager.xval);
+				_lookuptg[0].xval = checklist;
+			}
+			_lookuptg[1].xval = _lookuptg[0].xval; // Copy over to temp holder
+			_checklistTempsCourant = tempStp.xval;
+			setChecklist(); // setChecklist(tempUsager.xval);
 			pozwin(_wins[27], true, true, 0, 0, 1, 0);
 			showwin(_wins[27], true, 1, 0);
 			showblocker(true);
@@ -2409,7 +2429,7 @@ private function dbsaverecordcombo(win:*):void
 				}
 			}
 		}
-		u = u.join("|");
+		u = u.join("*");
 		//a = getobj(win, "CAL", 647).xval + "|" + getobj(win, "INP", 648).xval + "|" + getobj(win, "INP", 649).xval + "|" + getobj(win, "INP", 650).xval + "|" + getobj(win, "INP", 651).xval + "|" + getobj(win, "INP", 652).xval + "|" + getobj(win, "INP", 653).xval + "|" + getobj(win, "INP", 654).xval + "|" + getobj(win, "INP", 655).xval; 
 		a = getobj(win, "CAL", 647).xval + "|" + getobj(win, "INP", 648).xval + "|" + getobj(win, "INP", 649).xval + "|" + getobj(win, "INP", 650).xval + "|" + getobj(win, "INP", 651).xval + "|" + getobj(win, "INP", 652).xval + "|" + getobj(win, "INP", 653).xval + "|" + getobj(win, "INP", 654).xval; 
 		pv = "fn131¦" + _curuser[0] + "|" + _curuser[1] + " " + _curuser[2] + "|" + _curuser[4] + "¦" + u + "¦" + a;
