@@ -152,5 +152,9 @@ private function picioerror(e:IOErrorEvent):void
 	//hidepreloader();
 	_picloader.contentLoaderInfo.removeEventListener(Event.COMPLETE, picloaded);
 	_picloader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, picioerror);
-	browser_debug("Could not load image! " + e.text);
+	var errMsg:String = "INITIALIZATION ERROR: Could not load image file";
+	if ( e.text.indexOf("URL") > 0 ) {
+		errMsg += " (URL:" + e.text.split("URL:")[1] + ")";
+	}
+	browser_debug( errMsg );
 }

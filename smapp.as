@@ -124,6 +124,7 @@
 		private var _userLookupNumResults:uint = 0;
 		private var _checklistTempsCourant;
 		private var _onServer:Boolean = false;
+		private var _inBrowser:Boolean = false;
 		
 		//------------------------------
 		
@@ -143,10 +144,14 @@
 			removeEventListener(Event.ADDED_TO_STAGE, start);
 			
 			_onServer = ( stage.loaderInfo.url.indexOf("zepsom.org") >= 0 );
+			_inBrowser = _onServer || ( stage.loaderInfo.url.indexOf( "localhost" ) >= 0 );
 			if ( _onServer ) {
 				_dbpath = ( _onServer ? "https://www.zepsom.org/" : "http://localhost/SmappZep/" );
 				_apppath = _dbpath;
 				browser_debug("Running on server: " + _dbpath + ", " + _apppath);
+			}
+			else if ( _inBrowser ) {
+				browser_debug("Running locally in browser: " + _dbpath + ", " + _apppath);
 			}
 			else {
 				trace("Running on local machine");
@@ -357,7 +362,7 @@
 		
 		public function browser_debug(str:String):void
 		{
-			if ( _onServer ) {
+			if ( _inBrowser ) {
 				ExternalInterface.call("console.log", str );
 			}
 			else {
