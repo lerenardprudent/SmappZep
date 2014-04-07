@@ -1405,6 +1405,7 @@ private function obactbtn(ob, obn, win):void
 		*/
 		case "BTN_661":			//save user + action interviewer screen
 			dbsaverecordcombo(win);
+			winrefresh(_wins[9]);
 			showwin(win, false, 1, 0);
 			break;
 			

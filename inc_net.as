@@ -1,4 +1,6 @@
-﻿private function appdbexec(df, par):void
+﻿import flash.display.Loader;
+import flash.events.IOErrorEvent;
+private function appdbexec(df, par):void
 {
 	appdbload(_dbpath + df + ".php", par);
 }
@@ -105,13 +107,21 @@ private function txtioerror(e:IOErrorEvent):void
 	}
 }
 
-private function loadpic(pic):void
+private function loadpic(pic, c:Function, use_xloader:Boolean = true):void
 {
 	//showpreloader();
-	_picloader = new Loader();
-	_picloader.contentLoaderInfo.addEventListener(Event.COMPLETE,picloaded, false, 0, true);
-	_picloader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, picioerror, false, 0, true);
-	_picloader.load(new URLRequest(pic));
+	if ( use_xloader ) {
+		_xloader = new Loader();
+		_xloader.contentLoaderInfo.addEventListener(Event.COMPLETE,c, false, 0, true);
+		_xloader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, picioerror, false, 0, true);
+		_xloader.load(new URLRequest(pic));
+	}
+	else {
+		_picloader = new Loader();
+		_picloader.contentLoaderInfo.addEventListener(Event.COMPLETE,c, false, 0, true);
+		_picloader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, picioerror, false, 0, true);
+		_picloader.load(new URLRequest(pic));
+	}
 }
 
 private function picloaded(e:Event):void
@@ -137,9 +147,10 @@ private function picloaded(e:Event):void
 	_picholder.addChild(img);
 }
 
-private function picioerror(e:Event):void
+private function picioerror(e:IOErrorEvent):void
 {
 	//hidepreloader();
 	_picloader.contentLoaderInfo.removeEventListener(Event.COMPLETE, picloaded);
 	_picloader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, picioerror);
+	browser_debug("Could not load image! " + e.text);
 }

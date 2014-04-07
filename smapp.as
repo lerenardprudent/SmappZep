@@ -176,13 +176,14 @@
 			_blocker.visible = false;
 			this.addChild(_blocker);
 			
-			_xloader = new Loader();
-			_xloader.contentLoaderInfo.addEventListener(Event.COMPLETE, appheadok, false, 0, true);
-			_xloader.load(new URLRequest('media/apphead.swf'));
+			//_xloader = new Loader();
+			//_xloader.contentLoaderInfo.addEventListener(Event.COMPLETE, appheadok, false, 0, true);
+			//_xloader.load(new URLRequest('media/apphead.swf'));
+			loadpic('media/apphead.swf', appheadok);
 			
 			_picholder = _main;
 			_picfx = ["", .5, 0, 0, "", "normal"];
-			loadpic("media/appback.swf");
+			loadpic("media/appback.swf", picloaded, false);
 			
 			_clock.visible = false;
 			_clock.filters = [new DropShadowFilter(3, 45, 0x000000, .3, 3, 3, 1, 3)]
@@ -211,9 +212,10 @@
 			this.setChildIndex(_apphead, 0);
 			_xloader = null;
 			
-			_xloader = new Loader();
-			_xloader.contentLoaderInfo.addEventListener(Event.COMPLETE, preloaderok, false, 0, true);
-			_xloader.load(new URLRequest('media/preload.swf'));
+			//_xloader = new Loader();
+			//_xloader.contentLoaderInfo.addEventListener(Event.COMPLETE, preloaderok, false, 0, true);
+			//_xloader.load(new URLRequest('media/preload.swf'));
+			loadpic('media/preload.swf', preloaderok);
 		}
 		
 		private function preloaderok(e:Event):void
@@ -357,6 +359,9 @@
 		{
 			if ( _onServer ) {
 				ExternalInterface.call("console.log", str );
+			}
+			else {
+				trace(str);
 			}
 		}
 	}
