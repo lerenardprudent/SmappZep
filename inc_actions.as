@@ -734,7 +734,7 @@ private function obactbtn(ob, obn, win):void
 				//getobj(_wins[14], "INP", 311).xval = _curuser[4];
 				//getobj(_wins[14], "INP", 312).xval = _curuser[1] + " " + _curuser[2];
 				getobj(_wins[14], "INP", 301).xval = v[0];
-				getobj(_wins[14], "INP", 330).xval = v[1];
+				getobj(_wins[14], "STP", 330).xval = v[1];
 				getobj(_wins[14], "INP", 327).xval = v[4];
 				if (v[2] == "" && v[3] == "")
 				{
@@ -1231,7 +1231,7 @@ private function obactbtn(ob, obn, win):void
 			}
 			else
 			{
-				alert(_wins[0], "Remplisez correctement toutes les informations obligatoires.", "");
+				alert(_wins[0], "Remplissez correctement toutes les informations obligatoires.", "");
 			}
 			break;
 		case "BTN_485":			//reset filter of activity
@@ -1651,7 +1651,7 @@ private function actionalert(... parms):void
 			getobj(_wins[14], "STP", 332).xval = v[15];		//phase user
 			getobj(_wins[14], "STP", 333).xval = v[16];		//step user
 			getobj(_wins[14], "STP", 334).xval = v[17];		//status user
-			getobj(_wins[14], "INP", 330).xval = v[18];		//xgroup user
+			getobj(_wins[14], "STP", 330).xval = v[18];		//xgroup user
 			getobj(_wins[14], "INP", 339).xval = v[19];		//rate km
 			getobj(_wins[14], "INP", 340).xval = v[20];		//rate hrs
 			getobj(_wins[14], "CAL", 322).xval = getobj(_wins[14], "CAL", 324).xval = defdate();		//start + end date
@@ -3016,7 +3016,7 @@ private function lookup2form(win):void
 				getobj(_wins[14], "INP", 301).xval = sr[0];
 				getobj(_wins[14], "INP", 327).xval = sr[1];
 				getobj(_wins[14], "INP", 328).xval = sr[2] + " " + sr[3];
-				getobj(_wins[14], "INP", 330).xval = sr[5];
+				getobj(_wins[14], "STP", 330).xval = sr[5];
 			}
 		}
 		else if (_dblookuptg[0] == _wins[15])		//users filter win
