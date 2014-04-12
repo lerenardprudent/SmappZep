@@ -1524,6 +1524,8 @@ date_default_timezone_set('America/Montreal');
 	function fn176($par)			//user actions - reasign interviewer for filtered/selected users
 	{
 		global $userstbl;
+		global $activtbl;
+		
 		$retv = "-er-sql-";
 		$whr = "";
 		backupusers();
@@ -1586,7 +1588,20 @@ date_default_timezone_set('America/Montreal');
 						debug("**** Cannot assign ".$partiUsr." to ".$interviewerB);
 					}
 					else {
-						$newActivParms = array( "", "", $interviewerB_id,
+						$reassignIntvSQL1 = "select dstart, idusr, nameusr from ".$activtbl." where description = 'ASSIGNÉ INTERVIEWER' and pphase = '".$partiPhase."' and idparti = '".$partiIdu."'";
+						$resultk = @mysql_query($reassignIntvSQL1);
+						$num_actvt = mysql_num_rows($resultk);
+						if ( $resultk ) {
+							if ( $num_actvt == 1 ) {
+								$row = mysql_fetch_array($resultk);
+								$note = mysql_real_escape_string("Assigné précédemment (".$row['dstart'].") à ".$row['nameusr']." (".$row['idusr'].").");
+								$reassignIntvSQL2 = "update ".$activtbl." set idu='".$interviewerB_id."', idusr='".$interviewerB."', nameusr='".$interviewerB_name."', mode='SYS', comments='".$note."', dstart='".$currDate."', dend='".$currDate."' where idusr='".$row['idusr']."' and pphase='".$partiPhase."' and idparti='".$partiIdu."'";
+								$resultl = @mysql_query($reassignIntvSQL2);
+								$num_ac_updated = mysql_affected_rows();
+								debug("--== Updated activity...(".$num_ac_updated." updated) : ".$reassignIntvSQL2);
+							}
+							else if ( $num_actvt == 0 ) { // This should NOT happen, but just in case...
+								$newActivParms = array( "", "", $interviewerB_id,
 												$partiId, $interviewerB, $partiIdu,
 												$interviewerB_name, $partiName, "EVT",
 												"FIN", "SYS", "GEN",
@@ -1594,11 +1609,13 @@ date_default_timezone_set('America/Montreal');
 												$partiStat, "ASSIGNÉ INTERVIEWER", $currDate,
 												$currTime, $currDate, $currTime,
 												"", "", "", "", "", "", "", "", "",
-												"", $partiCoho, "Activité créée par système suite à réaffectation.");
-						debug("--== Creating activity...");
-						if ( fn204($newActivParms) != '-ok-fn204-' ) {
-							$reassignment_proc_error = true;
-							continue;
+												"", $partiCoho, mysql_real_escape_string("Assigné précédemment à ".$interviewerA."."));
+								debug("--== Creating activity...");
+								if ( fn204($newActivParms) != '-ok-fn204-' ) {
+									$reassignment_proc_error = true;
+									continue;
+								}
+							}
 						}
 					
 						/* Activity record created. Now let's update the user record with the new interviewer */
@@ -2998,6 +3015,7 @@ date_default_timezone_set('America/Montreal');
 	
 	$debug_on = file_exists('.mode_test');
 	$userstbl = "users";		//usersgpmt, users, ...
+	$activtbl = "activity";
 	$retvar = "-er-post-";
 	$pvarx = "";
 	if(isset($_POST['pvar'])){$pvarx = $_POST['pvar'];}elseif(isset($_GET['pvar'])){$pvarx = $_GET['pvar'];}
