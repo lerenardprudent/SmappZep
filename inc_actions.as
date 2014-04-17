@@ -2060,7 +2060,7 @@ private function setfldsperms(win:*):void
 			}
 		}
 		else if (v == "INT" && _curuser[3] == "ADM") {
-			fl = [["INP", 95], ["INP", 96], ["INP", 109], ["INP", 110], ["INP", 184], ["INP", 185]];
+			fl = [["INP", 95], ["INP", 96], ["INP", 184], ["INP", 185]];
 		}
 		else
 		{
