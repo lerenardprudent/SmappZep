@@ -2662,7 +2662,7 @@ date_default_timezone_set('America/Montreal');
 			$tota += $row['cust0'];
 			$totb += $row['cust1'];
 		}
-		$strdata = "<tr><td colspan='4' align='right'><b>Total</b></td><td align='right'><b>" . $tota. "</b></td><td align='right'><b>$ " . number_format($totb,2) . "</b></td><td></td></tr>";		//total here
+		$strdata = "<tr><td colspan='4' align='right'><b>Total</b></td><td align='right'><b>" . number_format($tota, 2, '.', ''). "</b></td><td align='right'><b>$ " . number_format($totb,2) . "</b></td><td></td></tr>";		//total here
 		fwrite($fh, $strdata);
 		$strdata = "</table><div class='red'><br/>Signature du superviseur:________________________________<br/><br/><br/></div>";
 		fwrite($fh, $strdata);
