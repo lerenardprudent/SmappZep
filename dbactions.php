@@ -283,7 +283,7 @@ date_default_timezone_set('America/Montreal');
 			}
 			elseif($flt[59] != "---")
 			{
-				$wx = $wx . " and (cust8 like '%" .$var[59]. "%' or cust8 like '%" .$var[59]. "_" .$flt[8]. "%')";
+				$wx = $wx . " and (cust8 like '" .$var[59]. "%' or cust8 like '%" .$var[59]. "_" .$flt[8]. "%')";
 				//if ($flt[8] != "---")
 				//{
 				//	$wx = $wx . " and cust8 like '%" .$var[59]. "_" .$flt[8]. "%'";
