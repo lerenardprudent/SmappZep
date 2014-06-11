@@ -273,6 +273,29 @@ function process($line_no, $id, $mostRecentDate, $entries)
   echo "<br>-------------------------------<br>";
 }
 
+function update_birthdates()
+{
+  global $userstbl;
+  
+  $row = 1;
+  if (($handle = fopen("birthdates.csv", "r")) !== FALSE) {
+    fgetcsv($handle, 1000, ","); // Skip row titles on first line
+    $row++;
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+      $date = $data[2];
+      if ( strlen( $date ) == 10 && $date[2] == '/' && $date[5] == '/' ) {
+        $date = substr( $date, 6, 4 ) . "-" . substr( $date, 3, 2 ) . "-" . substr( $date, 0, 2 );
+        $querySQL = "UPDATE " . $userstbl . " SET birth = '" . $date . "' WHERE idusr = " . $data[1];
+        $result = @mysql_query($querySQL);
+        $num_rows_aff = mysql_affected_rows();
+        echo $querySQL . "..." . $num_rows_aff . " row(s) updated<br>";
+      }
+      $row++;
+    }
+    fclose($handle);
+  }
+}
+
 	$debug_on = file_exists('.mode_test');
 	$userstbl = "users";
   $addrstbl = "address";
@@ -309,6 +332,10 @@ function process($line_no, $id, $mostRecentDate, $entries)
 		{
       update_docs_signes();
 		}
+    else if ($pvarx[0] == "up_bday")
+		{
+      update_birthdates();
+		}
     else {
       echo "Rien n'a été fait<br>";
     }
@@ -318,4 +345,5 @@ function process($line_no, $id, $mostRecentDate, $entries)
 	else {
     echo "Aucun paramètre n'a été fourni<br>";
   }
+  
 ?>
