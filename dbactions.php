@@ -95,6 +95,7 @@ date_default_timezone_set('America/Montreal');
 		$result = @mysql_query($querySQL) or die ("-er-sql-" . mysql_error());
 		if ($result) { $trows = mysql_num_rows($result); }
 		$querySQL = "select id, idusr, idusraux, fname, lname, type, phase, step, status, hzone1, hzone2, hzone3, xgroup, cust6, cust7 from " .$userstbl. " " .$whr. " order by " .$srt. " limit " .$par[1]. ", " . $par[2];
+		//file_put_contents('debug_out', $querySQL, FILE_APPEND);
 		$result = @mysql_query($querySQL) or die ("-er-sql-" . mysql_error());
 		if($result)
 		{
@@ -164,7 +165,7 @@ date_default_timezone_set('America/Montreal');
 			$qfind = "";
 		}
 		
-		$var = array("type='PAR'", "type='POT'", "type='REC'", "type='INT'", "type='PRE'", "type='SUP'", "type='ADM'", "type='AUT'", "phase='".$flt[8]."'", "xgroup='".$flt[9]."'", "step='INI'", "step='REC'", "step='AUT'", "step='INT'", "step='AUT'", "step='ACQ'", "step='AUT'", "step='FIN'", "status='ACT'", "status='COM'", "status='ARE'", "status='NRE'", "status='NIW'", "status='ABA'", "status='DEC'", "status='DHZ'", "status='DAI'", "status='ANN'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "sex='H'", "sex='F'", "birth >= '".$flt[36]."'", "birth <= '".$flt[37]."'", "matrim='CEL'", "matrim='CDF'", "matrim='MAR'", "matrim='SEP'", "matrim='DIV'", "matrim='VEU'", "revcode = '".$flt[44]."'", "rev = '".$flt[45]."'", "educ='1'", "educ='2'", "educ='3'", "educ='4'", "educ='5'", "educ='6'", "hzone1='".$flt[52]."'", "hzone2='".$flt[53]."'", "hzone3='".$flt[54]."'", $chklst, $flt[56], $flt[57], $flt[58], $flt[59], $flt[60], $flt[61], $qfind, "(cust1 >= '".$flt[63]."' or cust2 >= '".$flt[63]."')", "(cust1 <= '".$flt[64]."' or cust2 <= '".$flt[64]."')", "(cust1 >= '".$flt[63]."' and cust1 <= '".$flt[64]."') or (cust2 >= '".$flt[63]."' and cust2 <= '".$flt[64]."')");
+		$var = array("type='PAR'", "type='POT'", "type='REC'", "type='INT'", "type='PRE'", "type='SUP'", "type='ADM'", "type='AUT'", "phase='".$flt[8]."'", "xgroup='".$flt[9]."'", "step='INI'", "step='REC'", "step='AUT'", "step='INT'", "step='AUT'", "step='ACQ'", "step='AUT'", "step='FIN'", "status='ACT'", "status='COM'", "status='ARE'", "status='NRE'", "status='NIW'", "status='ABA'", "status='DEC'", "status='DHZ'", "status='DAI'", "status='ANN'", "status='AUT'", "status='AUT'", "status='AUT'", "status='AUT'", "sex='H'", "sex='F'", "lang='FR'", "lang='EN'", "birth >= '".$flt[36]."'", "birth <= '".$flt[37]."'", "matrim='CEL'", "matrim='CDF'", "matrim='MAR'", "matrim='SEP'", "matrim='DIV'", "matrim='VEU'", "revcode = '".$flt[44]."'", "rev = '".$flt[45]."'", "educ='1'", "educ='2'", "educ='3'", "educ='4'", "educ='5'", "educ='6'", "hzone1='".$flt[52]."'", "hzone2='".$flt[53]."'", "hzone3='".$flt[54]."'", $chklst, $flt[56], $flt[57], $flt[58], $flt[59], $flt[60], $flt[61], $qfind, "(cust1 >= '".$flt[63]."' or cust2 >= '".$flt[63]."')", "(cust1 <= '".$flt[64]."' or cust2 <= '".$flt[64]."')", "(cust1 >= '".$flt[63]."' and cust1 <= '".$flt[64]."') or (cust2 >= '".$flt[63]."' and cust2 <= '".$flt[64]."')");
 		$exp = NULL;
 		for ($i = 0; $i <= 7; $i += 1)		//type
 		{
@@ -196,13 +197,20 @@ date_default_timezone_set('America/Montreal');
 		}
 		if(count($exp) > 0){ $wr[] = "(" . implode(" or ", $exp) . ")"; }
 		$exp = NULL;
-		for ($i = 18; $i <= 33; $i += 1)		//status
+		for ($i = 18; $i <= 31; $i += 1)		//status
 		{
 			if ($flt[$i] != 0 && $flt[$i] != "---") { $exp[] = $var[$i]; }
 		}
 		if(count($exp) > 0){ $wr[] = "(" . implode(" or ", $exp) . ")"; }
 		$exp = NULL;
-		for ($i = 34; $i <= 35; $i += 1)		//sex
+		//for ($z = 30; $z <= 39; $z += 1)		{ echo "$z: "  . $flt[$z] . "\n"; }
+		for ($i = 32; $i <= 33; $i += 1)		//sex
+		{
+			if ($flt[$i] != 0 && $flt[$i] != "---") { $exp[] = $var[$i]; }
+		}
+		if(count($exp) > 0){ $wr[] = "(" . implode(" or ", $exp) . ")"; }
+		$exp = NULL;
+		for ($i = 34; $i <= 35; $i += 1)		//lang
 		{
 			if ($flt[$i] != 0 && $flt[$i] != "---") { $exp[] = $var[$i]; }
 		}
@@ -385,7 +393,7 @@ date_default_timezone_set('America/Montreal');
 			}
 		}
 		
-		$querySQL = "fname='" .$par[2]. "', lname='" .$par[3]. "', idusr='" .$par[4]. "', idusraux='" .$par[5]. "', alias='" .$par[6]. "', pword='" .$par[7]. "', type='" .$par[8]. "', status='" .$par[9]. "', lang='" .$par[10]. "', birth='" .$par[11]. "', sex='" .$par[12]. "', matrim='" .$par[13]. "', educ='" .$par[14]. "', prof='" .$par[15]. "', profcode='" .$par[16]. "', rev='" .$par[17]. "', revcode='" .$par[18]. "', hphone='" .$par[19]. "', hfax='" .$par[20]. "', cphone='" .$par[21]. "', haval1f='" .$par[22]. "', haval1t='" .$par[23]. "', haval2f='" .$par[24]. "', haval2t='" .$par[25]. "', haval3f='" .$par[26]. "', haval3t='" .$par[27]. "', hemail='" .$par[28]. "', haddress='" .$par[29]. "', haddressx='" .$par[30]. "', hcity='" .$par[31]. "', hstate='" .$par[32]. "', hcountry='" .$par[33]. "', hpostal='" .$par[34]. "', hdate='" .$par[35]. "', hlat='" .$par[36]. "', hlng='" .$par[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', workplace='" .$par[41]. "', wposition='" .$par[42]. "', wdate='" .$par[43]. "', wphone='" .$par[44]. "', wfax='" .$par[45]. "', waval1f='" .$par[46]. "', waval1t='" .$par[47]. "', wemail='" .$par[48]. "', waddress='" .$par[49]. "', waddressx='" .$par[50]. "', wcity='" .$par[51]. "', wstate='" .$par[52]. "', wcountry='" .$par[53]. "', wpostal='" .$par[54]. "', wlat='" .$par[55]. "', wlng='" .$par[56]. "', wzone1='" .$z4. "', wzone2='" .$z5. "', wzone3='" .$z6. "', social='" .$par[60]. "', xcontact1='" .$par[61]. "', xcontact2='" .$par[62]. "', xcontact3='" .$par[63]. "', cust1='" .$par[64]. "', cust2='" .$par[65]. "', cust3='" .$par[66]. "', cust4='" .$par[67]. "', cust5='" .$par[68]. "', cust6='" .$par[69]. "', cust7='" .$par[70]. "', cust8='" .$par[71]. "', cust9='" .$par[72]. "', checklist='" .$par[73]. "', phase='" .$par[74]. "', step='" .$par[75]. "', xgroup='" .$par[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .mysql_real_escape_string($par[78]). "'";
+		$querySQL = "fname='" .addslashes($par[2]). "', lname='" .addslashes($par[3]). "', idusr='" .$par[4]. "', idusraux='" .$par[5]. "', alias='" .$par[6]. "', pword='" .$par[7]. "', type='" .$par[8]. "', status='" .$par[9]. "', lang='" .$par[10]. "', birth='" .$par[11]. "', sex='" .$par[12]. "', matrim='" .$par[13]. "', educ='" .$par[14]. "', prof='" .$par[15]. "', profcode='" .$par[16]. "', rev='" .$par[17]. "', revcode='" .$par[18]. "', hphone='" .$par[19]. "', hfax='" .$par[20]. "', cphone='" .$par[21]. "', haval1f='" .$par[22]. "', haval1t='" .$par[23]. "', haval2f='" .$par[24]. "', haval2t='" .$par[25]. "', haval3f='" .$par[26]. "', haval3t='" .$par[27]. "', hemail='" .$par[28]. "', haddress='" .addslashes($par[29]). "', haddressx='" . addslashes($par[30]). "', hcity='" .addslashes($par[31]). "', hstate='" .addslashes($par[32]). "', hcountry='" .addslashes($par[33]). "', hpostal='" .$par[34]. "', hdate='" .$par[35]. "', hlat='" .$par[36]. "', hlng='" .$par[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', workplace='" .addslashes($par[41]). "', wposition='" .addslashes($par[42]). "', wdate='" .$par[43]. "', wphone='" .$par[44]. "', wfax='" .$par[45]. "', waval1f='" .$par[46]. "', waval1t='" .$par[47]. "', wemail='" .$par[48]. "', waddress='" .addslashes($par[49]). "', waddressx='" .addslashes($par[50]). "', wcity='" .addslashes($par[51]). "', wstate='" .addslashes($par[52]). "', wcountry='" .addslashes($par[53]). "', wpostal='" .$par[54]. "', wlat='" .$par[55]. "', wlng='" .$par[56]. "', wzone1='" .$z4. "', wzone2='" .$z5. "', wzone3='" .$z6. "', social='" .$par[60]. "', xcontact1='" . addslashes($par[61]) . "', xcontact2='" .addslashes($par[62]). "', xcontact3='" .addslashes($par[63]). "', cust1='" .$par[64]. "', cust2='" .$par[65]. "', cust3='" .$par[66]. "', cust4='" .$par[67]. "', cust5='" .$par[68]. "', cust6='" .$par[69]. "', cust7='" .$par[70]. "', cust8='" .$par[71]. "', cust9='" .$par[72]. "', checklist='" .$par[73]. "', phase='" .$par[74]. "', step='" .$par[75]. "', xgroup='" .$par[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .mysql_real_escape_string($par[78]). "'";
 		if ($id == "")			//insert
 		{
 			$querySQL = "insert into " .$userstbl. " set id='NULL', " . $querySQL;
@@ -393,6 +401,7 @@ date_default_timezone_set('America/Montreal');
 		else
 		{
 			$querySQL = "update " .$userstbl. " set " . $querySQL . " where id='" .$id. "'";
+			debug("Query: " . $querySQL);
 		}
 		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if($result)
@@ -403,6 +412,7 @@ date_default_timezone_set('America/Montreal');
 		else
 		{
 			$retv = "-er-fn104-" . mysql_error();
+			debug("Indeed error");
 			return $retv;
 		}
 		
@@ -830,7 +840,7 @@ date_default_timezone_set('America/Montreal');
 		$dd = explode("-",$paa[0]);
 		$dd[0] = $dd[0] + 2;
 		$dd = implode("-", $dd);
-		$querySQL = "fname='" .$ppa[2]. "', lname='" .$ppa[3]. "', status='" .$ppa[9]. "', hphone='" .$ppa[19]. "', wphone='" .$ppa[44]. "', cphone='" .$ppa[21]. "', hemail='" .$ppa[28]. "', haddress='" .$ppa[29]. "', haddressx='" .$ppa[30]. "', hcity='" .$ppa[31]. "', hstate='" .$ppa[32]. "', hcountry='" .$ppa[33]. "', hpostal='" .$ppa[34]. "', hdate='" .$ppa[35]. "', hlat='" .$ppa[36]. "', hlng='" .$ppa[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', social='" .$ppa[60]. "', xcontact1='" .$ppa[61]. "', xcontact2='" .$ppa[62]. "', xcontact3='" .$ppa[63]. "', cust1='" .$paa[0]. "', cust2='" .$dd. "', cust4='" .$ppa[67]. "', checklist='" .$ppa[73]. "', phase='" .$ppa[74]. "', step='" .$ppa[75]. "', xgroup='" .$ppa[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .$ppa[78]. "'";
+		$querySQL = "fname='" .addslashes($ppa[2]). "', lname='" .addslashes($ppa[3]). "', status='" .$ppa[9]. "', hphone='" .$ppa[19]. "', wphone='" .$ppa[44]. "', cphone='" .$ppa[21]. "', hemail='" .$ppa[28]. "', haddress='" .addslashes($ppa[29]). "', haddressx='" .addslashes($ppa[30]). "', hcity='" .addslashes($ppa[31]). "', hstate='" .addslashes($ppa[32]). "', hcountry='" .$ppa[33]. "', hpostal='" .$ppa[34]. "', hdate='" .$ppa[35]. "', hlat='" .$ppa[36]. "', hlng='" .$ppa[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', social='" .$ppa[60]. "', xcontact1='" . addslashes($ppa[61]) . "', xcontact2='" .addslashes($ppa[62]). "', xcontact3='" .addslashes($ppa[63]). "', cust1='" .$paa[0]. "', cust2='" .$dd. "', cust4='" .$ppa[67]. "', checklist='" .$ppa[73]. "', phase='" .$ppa[74]. "', step='" .$ppa[75]. "', xgroup='" .$ppa[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .addslashes($ppa[78]). "'";
 		$querySQL = "update " .$userstbl. " set " . $querySQL . " where id='" .$id. "'";
 		$resultu = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if ($resultu)
@@ -2207,7 +2217,7 @@ date_default_timezone_set('America/Montreal');
 		$retv = "-er-sql-";
 		
 		$id = $par[1];
-		$querySQL = "idu='" .$par[2]. "', idp='" .$par[3]. "', idusr='" .$par[4]. "', idparti='" .$par[5]. "', nameusr='" .$par[6]. "', nameparti='" .$par[7]. "', activity='" .$par[8]. "', status='" .$par[9]. "', mode='" .$par[10]. "', code='" .$par[11]. "', ptype='" .$par[12]. "', pphase='" .$par[13]. "', pstep='" .$par[14]. "', pstatus='" .$par[15]. "', description='" .$par[16]. "', dstart='" .$par[17]. "', tstart='" .$par[18]. "', dend='" .$par[19]. "', tend='" .$par[20]. "', location='" .$par[21]. "', cust0='" .$par[22]. "', cust1='" .$par[23]. "', cust2='" .$par[24]. "', cust3='" .$par[25]. "', cust4='" .$par[26]. "', cust5='" .$par[27]. "', cust6='" .$par[28]. "', cust7='" .$par[29]. "', cust8='" .$par[30]. "', pxgroup='" .$par[31]. "', comments='" .$par[32]. "'";
+		$querySQL = "idu='" .$par[2]. "', idp='" .$par[3]. "', idusr='" .$par[4]. "', idparti='" .$par[5]. "', nameusr='" .addslashes($par[6]). "', nameparti='" .addslashes($par[7]). "', activity='" .$par[8]. "', status='" .$par[9]. "', mode='" .$par[10]. "', code='" .$par[11]. "', ptype='" .$par[12]. "', pphase='" .$par[13]. "', pstep='" .$par[14]. "', pstatus='" .$par[15]. "', description='" .$par[16]. "', dstart='" .$par[17]. "', tstart='" .$par[18]. "', dend='" .$par[19]. "', tend='" .$par[20]. "', location='" .$par[21]. "', cust0='" .$par[22]. "', cust1='" .$par[23]. "', cust2='" .$par[24]. "', cust3='" .$par[25]. "', cust4='" .$par[26]. "', cust5='" .$par[27]. "', cust6='" .$par[28]. "', cust7='" .$par[29]. "', cust8='" .$par[30]. "', pxgroup='" .$par[31]. "', comments='" .$par[32]. "'";
 		if ($id == "")			//insert
 		{
 			$querySQL = "insert into activity set id='NULL', " . $querySQL;
@@ -2225,7 +2235,7 @@ date_default_timezone_set('America/Montreal');
 				//if ($par[14] == "REC" && $par[15] == "COM" && $par[16] == "RECRUTEMENT")			//CUSTOM: if action updated to recruited (completed), sync related records if any (same idparty, diff. id user) !!!
 				if ($par[14] == "REC")			//CUSTOM: if action updated sync related records if any (same idparty, diff. id user) !!!
 				{
-					$what = "nameparti='" .$par[7]. "', ptype='" .$par[12]. "', pstatus='" .$par[15]. "', description='" .$par[16]. "', dstart='" .$par[17]. "', tstart='" .$par[18]. "', dend='" .$par[19]. "', tend='" .$par[20]. "', location='" .$par[21]. "', cust0='" .$par[22]. "', cust1='" .$par[23]. "', cust2='" .$par[24]. "', cust3='" .$par[25]. "', cust4='" .$par[26]. "', cust5='" .$par[27]. "', cust6='" .$par[28]. "', cust7='" .$par[29]. "', cust8='" .$par[30]. "', comments='" .$par[32]. "'";
+					$what = "nameparti='" .addslashes($par[7]). "', ptype='" .$par[12]. "', pstatus='" .$par[15]. "', description='" .$par[16]. "', dstart='" .$par[17]. "', tstart='" .$par[18]. "', dend='" .$par[19]. "', tend='" .$par[20]. "', location='" .$par[21]. "', cust0='" .$par[22]. "', cust1='" .$par[23]. "', cust2='" .$par[24]. "', cust3='" .$par[25]. "', cust4='" .$par[26]. "', cust5='" .$par[27]. "', cust6='" .$par[28]. "', cust7='" .$par[29]. "', cust8='" .$par[30]. "', comments='" .$par[32]. "'";
 					//$querySQLx = "update activity set " . $what .  " where id!='" .$id. "' and idp='" .$par[3]. "' and pphase='" .$par[13]. "' and pstep='REC' and pstatus!='COM'";
 					$querySQLx = "update activity set " . $what .  " where id!='" .$id. "' and idp='" .$par[3]. "' and pphase='" .$par[13]. "' and pstep='REC'";
 					$resultx = @mysql_query($querySQLx);		// or die ("-er-sql-" . mysql_error());
@@ -2235,7 +2245,7 @@ date_default_timezone_set('America/Montreal');
 			{
 				if ($par[14] == "INT" && $par[16] == "ASSIGNÉ INTERVIEWER")			//CUSTOM: update recrutement assigne to recrutement completed on assign interviewer
 				{
-					$what = "ptype='PAR', nameparti='" .$par[7]. "', pstatus='COM', description='RECRUTEMENT'";
+					$what = "ptype='PAR', nameparti='" .addslashes($par[7]). "', pstatus='COM', description='RECRUTEMENT'";
 					$querySQLx = "update activity set " . $what .  " where idparti='" .$par[5]. "' and pphase='" .$par[13]. "' and pstep='REC' and pstatus='ACT'";
 					$resultx = @mysql_query($querySQLx);		// or die ("-er-sql-" . mysql_error());
 				}
