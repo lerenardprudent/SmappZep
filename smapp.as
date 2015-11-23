@@ -102,7 +102,7 @@
 		private var _varsarr:*;					//variables IDs and names
 		private var _answsarr:*;				//object id, type, page, value, variable, x (if dragged), y (if dragged)
 		private var _curuser:*;					//current admin (other than parti)
-		private var _curphase:String = "T-04";	//current phase
+		private var _curphase:String = "T-05";	//current phase
 		//private var _curparti:*;				//parti id from parti windows
 		private var _queparti:*;				//parti id for questionnaire
 		private var _curquest:String = "";		//id of the questionnaire
@@ -326,6 +326,7 @@
 			if (_test_mode) {
 				browser_debug("Mode test");
 				actiondb("-ok-fn100-4747¦Yan¦Kestens¦ADM¦SUP001¦0¦0");
+				//actiondb("-ok-fn100-4813¦Anne-Marie¦Paquin¦INT¦INT020¦0.43¦21.00¦T-04");
 				tofront(_wins[9]);
 				showwin(_wins[9], true, 1, 0);
 				setwinperms(_wins[9]);

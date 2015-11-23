@@ -1700,7 +1700,7 @@ private function actionapplyto():void
 		{
 			if (getobj(_wins[19], "RAD", 682).xval == 1)		//csv
 			{
-				_dbxfile[0] = "usrlist.txt";
+				_dbxfile[0] = "usrlist.csv";
 				dbloadlist("USRXCL", _dbpage[0], _dbpagelen[0], _dbflt[0], _dbsort[0], _dbsortdir[0], _dbxfile[0], lay);
 			}
 			else if (getobj(_wins[19], "RAD", 683).xval == 1 || exportUsersHTML )		//html
@@ -1715,7 +1715,7 @@ private function actionapplyto():void
 			{
 				if (getobj(_wins[19], "RAD", 682).xval == 1)		//csv
 				{
-					_dbxfile[0] = "usrlist.txt";
+					_dbxfile[0] = "usrlist.csv";
 					dbloadlist("USRXCS", _dbpage[0], _dbpagelen[0], selrecsarray(_wins[9], "LST", 79), _dbsort[0], _dbsortdir[0], _dbxfile[0], lay);
 				}
 				else if (getobj(_wins[19], "RAD", 683).xval == 1)		//html
@@ -1753,7 +1753,7 @@ private function actionapplyto():void
 		{
 			if (getobj(_wins[21], "RAD", 571).xval == 1)		//csv
 			{
-				_dbxfile[1] = "actlist.txt";
+				_dbxfile[1] = "actlist.csv";
 				dbloadlist("ACTXCL", _dbpage[1], _dbpagelen[1], _dbflt[1], _dbsort[1], _dbsortdir[1], _dbxfile[1], lay);
 			}
 			else if (getobj(_wins[21], "RAD", 572).xval == 1)		//html
@@ -1768,7 +1768,7 @@ private function actionapplyto():void
 			{
 				if (getobj(_wins[21], "RAD", 571).xval == 1)		//csv
 				{
-					_dbxfile[1] = "actlist.txt";
+					_dbxfile[1] = "actlist.csv";
 					dbloadlist("ACTXCS", _dbpage[1], _dbpagelen[1], selrecsarray(_wins[13], "LST", 285), _dbsort[1], _dbsortdir[1], _dbxfile[1], lay);
 				}
 				else if (getobj(_wins[21], "RAD", 572).xval == 1)		//html
@@ -2430,7 +2430,7 @@ private function dbsaverecordcombo(win:*):void
 				}
 			}
 		}
-		u = u.join("*");
+		u = u.join("^~~^");
 		//a = getobj(win, "CAL", 647).xval + "|" + getobj(win, "INP", 648).xval + "|" + getobj(win, "INP", 649).xval + "|" + getobj(win, "INP", 650).xval + "|" + getobj(win, "INP", 651).xval + "|" + getobj(win, "INP", 652).xval + "|" + getobj(win, "INP", 653).xval + "|" + getobj(win, "INP", 654).xval + "|" + getobj(win, "INP", 655).xval; 
 		a = getobj(win, "CAL", 647).xval + "|" + getobj(win, "INP", 648).xval + "|" + getobj(win, "INP", 649).xval + "|" + getobj(win, "INP", 650).xval + "|" + getobj(win, "INP", 651).xval + "|" + getobj(win, "INP", 652).xval + "|" + getobj(win, "INP", 653).xval + "|" + getobj(win, "INP", 654).xval; 
 		pv = "fn131¦" + _curuser[0] + "|" + _curuser[1] + " " + _curuser[2] + "|" + _curuser[4] + "¦" + u + "¦" + a;

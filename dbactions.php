@@ -94,8 +94,8 @@ date_default_timezone_set('America/Montreal');
 		$querySQL = "select id from " .$userstbl. " " .$whr;
 		$result = @mysql_query($querySQL) or die ("-er-sql-" . mysql_error());
 		if ($result) { $trows = mysql_num_rows($result); }
-		$querySQL = "select id, idusr, idusraux, fname, lname, type, phase, step, status, hzone1, hzone2, hzone3, xgroup, cust6, cust7 from " .$userstbl. " " .$whr. " order by " .$srt. " limit " .$par[1]. ", " . $par[2];
-		//file_put_contents('debug_out', $querySQL, FILE_APPEND);
+		$querySQL = "\nselect id, idusr, idusraux, fname, lname, type, phase, step, status, hzone1, hzone2, hzone3, xgroup, cust6, cust7 from " .$userstbl. " " .$whr. " order by " .$srt. " limit " .$par[1]. ", " . $par[2];
+		file_put_contents('debug_out2', $querySQL, FILE_APPEND);
 		$result = @mysql_query($querySQL) or die ("-er-sql-" . mysql_error());
 		if($result)
 		{
@@ -393,7 +393,83 @@ date_default_timezone_set('America/Montreal');
 			}
 		}
 		
-		$querySQL = "fname='" .addslashes($par[2]). "', lname='" .addslashes($par[3]). "', idusr='" .$par[4]. "', idusraux='" .$par[5]. "', alias='" .$par[6]. "', pword='" .$par[7]. "', type='" .$par[8]. "', status='" .$par[9]. "', lang='" .$par[10]. "', birth='" .$par[11]. "', sex='" .$par[12]. "', matrim='" .$par[13]. "', educ='" .$par[14]. "', prof='" .$par[15]. "', profcode='" .$par[16]. "', rev='" .$par[17]. "', revcode='" .$par[18]. "', hphone='" .$par[19]. "', hfax='" .$par[20]. "', cphone='" .$par[21]. "', haval1f='" .$par[22]. "', haval1t='" .$par[23]. "', haval2f='" .$par[24]. "', haval2t='" .$par[25]. "', haval3f='" .$par[26]. "', haval3t='" .$par[27]. "', hemail='" .$par[28]. "', haddress='" .addslashes($par[29]). "', haddressx='" . addslashes($par[30]). "', hcity='" .addslashes($par[31]). "', hstate='" .addslashes($par[32]). "', hcountry='" .addslashes($par[33]). "', hpostal='" .$par[34]. "', hdate='" .$par[35]. "', hlat='" .$par[36]. "', hlng='" .$par[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', workplace='" .addslashes($par[41]). "', wposition='" .addslashes($par[42]). "', wdate='" .$par[43]. "', wphone='" .$par[44]. "', wfax='" .$par[45]. "', waval1f='" .$par[46]. "', waval1t='" .$par[47]. "', wemail='" .$par[48]. "', waddress='" .addslashes($par[49]). "', waddressx='" .addslashes($par[50]). "', wcity='" .addslashes($par[51]). "', wstate='" .addslashes($par[52]). "', wcountry='" .addslashes($par[53]). "', wpostal='" .$par[54]. "', wlat='" .$par[55]. "', wlng='" .$par[56]. "', wzone1='" .$z4. "', wzone2='" .$z5. "', wzone3='" .$z6. "', social='" .$par[60]. "', xcontact1='" . addslashes($par[61]) . "', xcontact2='" .addslashes($par[62]). "', xcontact3='" .addslashes($par[63]). "', cust1='" .$par[64]. "', cust2='" .$par[65]. "', cust3='" .$par[66]. "', cust4='" .$par[67]. "', cust5='" .$par[68]. "', cust6='" .$par[69]. "', cust7='" .$par[70]. "', cust8='" .$par[71]. "', cust9='" .$par[72]. "', checklist='" .$par[73]. "', phase='" .$par[74]. "', step='" .$par[75]. "', xgroup='" .$par[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .mysql_real_escape_string($par[78]). "'";
+		$querySQL = "fname='" .addslashes($par[2]). 
+					"', lname='" .addslashes($par[3]). 
+					"', idusr='" .$par[4]. 
+					"', idusraux='" .$par[5]. 
+					"', alias='" .$par[6]. 
+					"', pword='" .$par[7]. 
+					"', type='" .$par[8]. 
+					"', status='" .$par[9]. 
+					"', lang='" .$par[10]. 
+					"', birth='" .$par[11]. 
+					"', sex='" .$par[12]. 
+					"', matrim='" .$par[13]. 
+					"', educ='" .$par[14]. 
+					"', prof='" .$par[15]. 
+					"', profcode='" .$par[16]. 
+					"', rev='" .$par[17]. 
+					"', revcode='" .$par[18]. 
+					"', hphone='" .$par[19]. 
+					"', hfax='" .$par[20]. 
+					"', cphone='" .$par[21]. 
+					"', haval1f='" .$par[22]. 
+					"', haval1t='" .$par[23]. 
+					"', haval2f='" .$par[24]. 
+					"', haval2t='" .$par[25]. 
+					"', haval3f='" .$par[26]. 
+					"', haval3t='" .$par[27]. 
+					"', hemail='" .$par[28]. 
+					"', haddress='" .addslashes($par[29]). 
+					"', haddressx='" . addslashes($par[30]). 
+					"', hcity='" .addslashes($par[31]). 
+					"', hstate='" .addslashes($par[32]). 
+					"', hcountry='" .addslashes($par[33]). 
+					"', hpostal='" .$par[34]. 
+					"', hdate='" .$par[35]. 
+					"', hlat='" .$par[36]. 
+					"', hlng='" .$par[37]. 
+					"', hzone1='" .$z1. 
+					"', hzone2='" .$z2. 
+					"', hzone3='" .$z3. 
+					"', workplace='" .addslashes($par[41]). 
+					"', wposition='" .addslashes($par[42]). 
+					"', wdate='" .$par[43]. 
+					"', wphone='" .$par[44]. 
+					"', wfax='" .$par[45]. 
+					"', waval1f='" .$par[46]. 
+					"', waval1t='" .$par[47]. 
+					"', wemail='" .$par[48]. 
+					"', waddress='" .addslashes($par[49]). 
+					"', waddressx='" .addslashes($par[50]). 
+					"', wcity='" .addslashes($par[51]). 
+					"', wstate='" .addslashes($par[52]). 
+					"', wcountry='" .addslashes($par[53]). 
+					"', wpostal='" .$par[54]. 
+					"', wlat='" .$par[55]. 
+					"', wlng='" .$par[56]. 
+					"', wzone1='" .$z4. 
+					"', wzone2='" .$z5. 
+					"', wzone3='" .$z6. 
+					"', social='" .$par[60]. 
+					"', xcontact1='" . addslashes($par[61]) . 
+					"', xcontact2='" .addslashes($par[62]). 
+					"', xcontact3='" .addslashes($par[63]). 
+					"', cust1='" .$par[64]. 
+					"', cust2='" .$par[65]. 
+					"', cust3='" .$par[66]. 
+					"', cust4='" .$par[67]. 
+					"', cust5='" .$par[68]. 
+					"', cust6='" .$par[69]. 
+					"', cust7='" .$par[70]. 
+					"', cust8='" .$par[71]. 
+					"', cust9='" .$par[72]. 
+					"', checklist='" .$par[73]. 
+					"', phase='" .$par[74]. 
+					"', step='" .$par[75]. 
+					"', xgroup='" .$par[76]. 
+					"', dateedit='" .date("Y-m-d", $td). 
+					"', comments='" .mysql_real_escape_string($par[78]). "'";
 		if ($id == "")			//insert
 		{
 			$querySQL = "insert into " .$userstbl. " set id='NULL', " . $querySQL;
@@ -401,7 +477,7 @@ date_default_timezone_set('America/Montreal');
 		else
 		{
 			$querySQL = "update " .$userstbl. " set " . $querySQL . " where id='" .$id. "'";
-			debug("Query: " . $querySQL);
+			debug("\nQuery: " . $querySQL);
 		}
 		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if($result)
@@ -784,6 +860,7 @@ date_default_timezone_set('America/Montreal');
 		$trows = 0;
 	
 		$querySQL = "select id, dstart, location, cust0, cust1, cust3, cust4, cust7, cust8 from activity where idu='" .$par[1]. "' and idp='" .$par[2]. "' and pstep = '" .$par[3]. "' and  pstatus = '" .$par[4]. "' and  pphase = '" .$par[5]. "'";
+		file_put_contents('debug_out2', "YO: " . $querySQL, FILE_APPEND);
 		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if($result)
 		{
@@ -815,7 +892,7 @@ date_default_timezone_set('America/Montreal');
 		$whr = "";
 		$td = mktime(0,0,0,date('m'),date('d'),date('Y'));
 		$pus = explode("|", $par[1]);
-		$ppa = explode("*", $par[2]);
+		$ppa = explode("^~~^", $par[2]);
 		$paa = explode("|", $par[3]);
 		$id = $ppa[1];
 		$z1 = $ppa[38];
@@ -840,8 +917,40 @@ date_default_timezone_set('America/Montreal');
 		$dd = explode("-",$paa[0]);
 		$dd[0] = $dd[0] + 2;
 		$dd = implode("-", $dd);
-		$querySQL = "fname='" .addslashes($ppa[2]). "', lname='" .addslashes($ppa[3]). "', status='" .$ppa[9]. "', hphone='" .$ppa[19]. "', wphone='" .$ppa[44]. "', cphone='" .$ppa[21]. "', hemail='" .$ppa[28]. "', haddress='" .addslashes($ppa[29]). "', haddressx='" .addslashes($ppa[30]). "', hcity='" .addslashes($ppa[31]). "', hstate='" .addslashes($ppa[32]). "', hcountry='" .$ppa[33]. "', hpostal='" .$ppa[34]. "', hdate='" .$ppa[35]. "', hlat='" .$ppa[36]. "', hlng='" .$ppa[37]. "', hzone1='" .$z1. "', hzone2='" .$z2. "', hzone3='" .$z3. "', social='" .$ppa[60]. "', xcontact1='" . addslashes($ppa[61]) . "', xcontact2='" .addslashes($ppa[62]). "', xcontact3='" .addslashes($ppa[63]). "', cust1='" .$paa[0]. "', cust2='" .$dd. "', cust4='" .$ppa[67]. "', checklist='" .$ppa[73]. "', phase='" .$ppa[74]. "', step='" .$ppa[75]. "', xgroup='" .$ppa[76]. "', dateedit='" .date("Y-m-d", $td). "', comments='" .addslashes($ppa[78]). "'";
+		$querySQL = "fname='" .addslashes($ppa[2]). 
+					"', lname='" .addslashes($ppa[3]). 
+					"', status='" .$ppa[9]. 
+					"', hphone='" .$ppa[19]. 
+					"', wphone='" .$ppa[44]. 
+					"', cphone='" .$ppa[21]. 
+					"', hemail='" .$ppa[28]. 
+					"', haddress='" .addslashes($ppa[29]). 
+					"', haddressx='" .addslashes($ppa[30]). 
+					"', hcity='" .addslashes($ppa[31]). 
+					"', hstate='" .addslashes($ppa[32]). 
+					"', hcountry='" .$ppa[33]. 
+					"', hpostal='" .$ppa[34]. 
+					"', hdate='" .$ppa[35]. 
+					"', hlat='" .$ppa[36]. 
+					"', hlng='" .$ppa[37]. 
+					"', hzone1='" .$z1. 
+					"', hzone2='" .$z2. 
+					"', hzone3='" .$z3. 
+					"', social='" .$ppa[60]. 
+					"', xcontact1='" . addslashes($ppa[61]) . 
+					"', xcontact2='" .addslashes($ppa[62]). 
+					"', xcontact3='" .addslashes($ppa[63]). 
+					"', cust1='" .$paa[0]. 
+					"', cust2='" .$dd. 
+					"', cust4='" .$ppa[67]. 
+					"', checklist='" .$ppa[73]. 
+					"', phase='" .$ppa[74]. 
+					"', step='" .$ppa[75]. 
+					"', xgroup='" .$ppa[76]. 
+					"', dateedit='" .date("Y-m-d", $td). 
+					"', comments='" .addslashes($ppa[78]). "'";
 		$querySQL = "update " .$userstbl. " set " . $querySQL . " where id='" .$id. "'";
+		file_put_contents('debug_out2', "\nHMMM: " . $querySQL, FILE_APPEND);
 		$resultu = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if ($resultu)
 		{
@@ -902,6 +1011,7 @@ date_default_timezone_set('America/Montreal');
 		if ($par[3] != "") { $whr = filteruser($par[3]); }
 		if ($par[4] != "") { $srt = $par[4] . " " . $par[5]; } else { $srt = "id"; }
 		$querySQL = "select * from " .$userstbl. " " .$whr. " order by " .$srt;		//id, idusr, idusraux, fname, lname, type, phase, step, status, hzone1, hzone2, hzone3, xgroup 
+		debug("YO: $querySQL (".$par[7].")");
 		$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 		if($result)
 		{
@@ -970,13 +1080,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvusr1($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
-		$strdata = "#\tCohorte\tPrénom\tNom\tID Usager\tNo. employé\tType\tTemps\tÉtape\tStatut\tQuartier\tS/R\tA/D\n";
+		$strdata = utf8_decode("#".$delim."Cohorte".$delim."Prénom".$delim."Nom".$delim."ID Usager".$delim."No. employé".$delim."Type".$delim."Temps".$delim."Étape".$delim."Statut".$delim."Quartier".$delim."S/R".$delim)."A/D\n";
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['id']. "\t" .$row['xgroup']. "\t" .$row['fname']. "\t" .$row['lname']. "\t" .$row['idusr']. "\t" .$row['idusraux']. "\t" .$row['type']. "\t" .$row['phase']. "\t" .$row['step']. "\t" .$row['status']. "\t" .$row['hzone1']. "\t" .$row['hzone2']. "\t" .$row['hzone3']. "\n";
+			$strdata = utf8_decode($row['id']. $delim .$row['xgroup']. $delim .$row['fname']. $delim .$row['lname']. $delim .$row['idusr']. $delim .$row['idusraux']. $delim .$row['type']. $delim .$row['phase']. $delim .$row['step']. $delim .$row['status']. $delim .$row['hzone1']. $delim .$row['hzone2']. $delim .$row['hzone3']). "\n";
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -984,13 +1095,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvusr2($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
-		$strdata = "#\tCohorte\tPrénom\tNom\tID Usager\tNo. employé\tType\tTemps\tÉtape\tStatut\tQuartier\tS/R\tA/D\n";
+		$strdata = utf8_decode("#".$delim."Cohorte".$delim."Prénom".$delim."Nom".$delim."ID Usager".$delim."No. employé".$delim."Type".$delim."Temps".$delim."Étape".$delim."Statut".$delim."Quartier".$delim."S/R".$delim)."A/D\n";
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['id']. "\t" .$row['xgroup']. "\t" .$row['fname']. "\t" .$row['lname']. "\t" .$row['idusr']. "\t" .$row['idusraux']. "\t" .$row['type']. "\t" .$row['phase']. "\t" .$row['step']. "\t" .$row['status']. "\t" .$row['hzone1']. "\t" .$row['hzone2']. "\t" .$row['hzone3']. "\n";
+			$strdata = utf8_decode($row['id']. $delim .$row['xgroup']. $delim .$row['fname']. $delim .$row['lname']. $delim .$row['idusr']. $delim .$row['idusraux']. $delim .$row['type']. $delim .$row['phase']. $delim .$row['step']. $delim .$row['status']. $delim .$row['hzone1']. $delim .$row['hzone2']. $delim .$row['hzone3']). "\n";
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -998,13 +1110,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvusr3($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
-		$strdata = "#\tCohorte\tPrénom\tNom\tID Usager\tNo. employé\tType\n";
+		$strdata = utf8_decode("#".$delim."Cohorte".$delim."Prénom".$delim."Nom".$delim."ID Usager".$delim."No. employé".$delim)."Type\n";
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['id']. "\t" .$row['xgroup']. "\t" .$row['fname']. "\t" .$row['lname']. "\t" .$row['idusr']. "\t" .$row['idusraux']. "\t" .$row['type']. "\n";
+			$strdata = utf8_decode($row['id']. $delim .$row['xgroup']. $delim .$row['fname']. $delim .$row['lname']. $delim .$row['idusr']. $delim .$row['idusraux']. $delim .$row['type']). "\n";
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -1022,6 +1135,7 @@ date_default_timezone_set('America/Montreal');
 			if ($par[3] != "") { $whr = filteruser($par[3]); }
 			if ($par[4] != "") { $srt = $par[4] . " " . $par[5]; } else { $srt = "id"; }
 			$querySQL = "select * from " .$userstbl. " " .$whr. " order by " .$srt;
+			debug("Working wif : $querySQL");
 			$result = @mysql_query($querySQL);		// or die ("-er-sql-" . mysql_error());
 			if($result)
 			{
@@ -1372,6 +1486,9 @@ date_default_timezone_set('America/Montreal');
 				fwrite($fh, $strdata); 
 			}
 			$strdata = "<td><div><b>" .trim($row['fname']). " " .trim($row['lname']). "</b><br/>" .trim($row['haddress']). "<br/>" .trim($row['hcity']). ", " .trim($row['hstate']). "<br/>" .$row['hpostal']. "</div></td>";
+			if ($row['idusr'] == '1708') {
+				debug("WAPOW:$strdata");
+			}
 			fwrite($fh, $strdata);
 			
 			if ($i%3 == 2 || $i == $trows)
@@ -2396,13 +2513,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvact1($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
-		$strdata = "#\tActivité\tÉtat\tCode\tID Resp.\tNom responsable\tID Parti.\tNom participant\tType parti.\tCohorte\tTemps\tÉtape\tStatut\tDebut\tFin\n"; 
+		$strdata = utf8_decode("#".$delim."Activité".$delim."État".$delim."Code".$delim."ID Resp.".$delim."Nom responsable".$delim."ID Parti".$delim."Nom participant".$delim."Type parti.".$delim."Cohorte".$delim."Temps".$delim."Étape".$delim."Statut".$delim."Debut".$delim."Fin\n"); 
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['id']. "\t" .$row['activity']. "\t" .$row['status']. "\t" .$row['code']. "\t" .$row['idusr']. "\t" .$row['nameusr']. "\t" .$row['idparti']. "\t" .$row['nameparti']. "\t" .$row['ptype']. "\t" .$row['pxgroup']. "\t" .$row['pphase']. "\t" .$row['pstep']. "\t" .$row['pstatus']. "\t" .$row['dstart']. "\t" .$row['dend']. "\n"; 
+			$strdata = utf8_decode($row['id']. $delim .$row['activity']. $delim .$row['status']. $delim .$row['code']. $delim .$row['idusr']. $delim .$row['nameusr']. $delim .$row['idparti']. $delim .$row['nameparti']. $delim .$row['ptype']. $delim .$row['pxgroup']. $delim .$row['pphase']. $delim .$row['pstep']. $delim .$row['pstatus']. $delim .$row['dstart']. $delim .$row['dend']). "\n"; 
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -2410,13 +2528,15 @@ date_default_timezone_set('America/Montreal');
 
 	function csvact2($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
-		$strdata = "#\tID Resp.\tNom responsable\tID Parti.\tNom participant\tTemps\tDebut\tFin\tKm.\tCoût Km.\tPayé le\n"; 
+		$strdata = utf8_decode("#".$delim."ID Resp".$delim."Nom responsable".$delim."ID Parti".$delim."Nom participant".$delim."Temps".$delim."Debut".$delim."Fin".$delim."Km.".$delim."Coût Km.".$delim."Payé le")."\n"; 
 		fwrite($fh, $strdata);
+		
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['id']. "\t" .$row['idusr']. "\t" .$row['nameusr']. "\t" .$row['idparti']. "\t" .$row['nameparti']. "\t" .$row['pphase']. "\t" .$row['dstart']. "\t" .$row['dend']. "\t" .$row['cust0']. "\t" .$row['cust1']. "\t" .$row['cust2']. "\n"; 
+			$strdata = utf8_decode($row['id']. $delim .$row['idusr']. $delim .$row['nameusr']. $delim .$row['idparti']. $delim .$row['nameparti']. $delim .$row['pphase']. $delim .$row['dstart']. $delim .$row['dend']. $delim .$row['cust0']. $delim .$row['cust1']. $delim .$row['cust2']). "\n"; 
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -2424,13 +2544,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvact2t($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'a');	 //or die("can't open file");
-		$strdata = "\n\n\n--------------------------------------------------------------------------------------------------------------------\nID Resp.\tNom responsable\tMontant total Km.\n"; 
+		$strdata = "\n\n\n--------------------------------------------------------------------------------------------------------------------\nID Resp.". $delim ."Nom responsable". $delim ."Montant total Km.\n"; 
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['idusr']. "\t" .$row['nameusr']. "\t" .$row['total']. "\n"; 
+			$strdata = utf8_decode($row['idusr']. $delim .$row['nameusr']. $delim .$row['total']). $delim."\n"; 
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -2438,13 +2559,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvact3($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'w');	 //or die("can't open file");
-		$strdata = "#\tID Resp.\tNom responsable\tID Parti.\tNom participant\tTemps\tDebut\tFin\tHrs.\tCoût Hrs.\tPayé le\n"; 
+		$strdata = utf8_decode("#".$delim."ID Resp.".$delim."Nom responsable".$delim."ID Parti.".$delim."Nom participant".$delim."Temps".$delim."Debut".$delim."Fin".$delim."Hrs.".$delim."Coût Hrs.".$delim."Payé le")."\n"; 
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['id']. "\t" .$row['idusr']. "\t" .$row['nameusr']. "\t" .$row['idparti']. "\t" .$row['nameparti']. "\t" .$row['pphase']. "\t" .$row['dstart']. "\t" .$row['dend']. "\t" .$row['cust3']. "\t" .$row['cust4']. "\t" .$row['cust5']. "\n"; 
+			$strdata = utf8_decode($row['id']. $delim .$row['idusr']. $delim .$row['nameusr']. $delim .$row['idparti']. $delim .$row['nameparti']. $delim .$row['pphase']. $delim .$row['dstart']. $delim .$row['dend']. $delim .$row['cust3']. $delim .$row['cust4']. $delim .$row['cust5']). "\n"; 
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -2452,13 +2574,14 @@ date_default_timezone_set('America/Montreal');
 
 	function csvact3t($res, $fi)
 	{
+		global $delim;
 		$strdata = "";
 		$fh = fopen($fi, 'a');	 //or die("can't open file");
-		$strdata = "\n\n\n--------------------------------------------------------------------------------------------------------------------\nID Resp.\tNom responsable\tMontant total Hre.\n"; 
+		$strdata = "\n\n\n--------------------------------------------------------------------------------------------------------------------\nID Resp.".$delim."Nom responsable".$delim."Montant total Hre.\n"; 
 		fwrite($fh, $strdata);
 		while ($row = mysql_fetch_array($res))
 		{
-			$strdata = $row['idusr']. "\t" .$row['nameusr']. "\t" .$row['total']. "\n"; 
+			$strdata = utf8_decode($row['idusr']. $delim .$row['nameusr']. $delim .$row['total']). "\n"; 
 			fwrite($fh, $strdata);
 		}
 		fclose($fh);
@@ -3028,6 +3151,7 @@ date_default_timezone_set('America/Montreal');
 	$activtbl = "activity";
 	$retvar = "-er-post-";
 	$pvarx = "";
+	$delim = ";";
 	if(isset($_POST['pvar'])){$pvarx = $_POST['pvar'];}elseif(isset($_GET['pvar'])){$pvarx = $_GET['pvar'];}
 	if($pvarx != "")
 	{
